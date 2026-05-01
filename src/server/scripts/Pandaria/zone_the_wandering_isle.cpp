@@ -73,43 +73,43 @@ public:
 
 class npc_tushui_monk : public CreatureScript
 {
-    public:
-        npc_tushui_monk() : CreatureScript("npc_tushui_monk") { }
+public:
+    npc_tushui_monk() : CreatureScript("npc_tushui_monk") {}
 
-        struct npc_tushui_monkAI : public ScriptedAI
+    struct npc_tushui_monkAI : public ScriptedAI
+    {
+        npc_tushui_monkAI(Creature* creature) : ScriptedAI(creature) {}
+
+        void Reset() override
         {
-            npc_tushui_monkAI(Creature* creature) : ScriptedAI(creature) { }
+            std::list<Creature*> poleList;
+            GetCreatureListWithEntryInGrid(poleList, me, 54993, 25.0f);
 
-            void Reset() override
+            if (poleList.empty())
             {
-                std::list<Creature*> poleList;
-                GetCreatureListWithEntryInGrid(poleList, me, 54993, 25.0f);
-
-                if (poleList.empty())
-                {
-                    me->DespawnOrUnsummon();
-                    return;
-                }
-
-                //Trinity::Containers::RandomResizeList(poleList, 1);
-
-                for (auto&& creature: poleList)
-                    me->EnterVehicle(creature);
-
-                me->SetFaction(2357);
+                me->DespawnOrUnsummon(1000s);
+                return;
             }
 
-            void JustDied(Unit* /*killer*/) override
-            {
-                me->ExitVehicle();
-                me->DespawnOrUnsummon();
-            }
-        };
+            Trinity::Containers::MakeIteratorPair(poleList, 1);
 
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_tushui_monkAI(creature);
+            for (auto&& creature : poleList)
+                me->EnterVehicle(creature);
+
+            me->SetFaction(2357);
         }
+
+        void JustDied(Unit* /*killer*/) override
+        {
+            me->ExitVehicle();
+            me->DespawnOrUnsummon(1000s);
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_tushui_monkAI(creature);
+    }
 };
 
 // Rock Jump - 103069 / 103070 / 103077
