@@ -324,7 +324,7 @@ public:
             case GOSSIP_ACTION_INFO_DEF + 10: /*Repair All Equipment*/
             {
                 player->DurabilityRepairAll(false, 0.0f, false);
-                ChatHandler(player->GetSession()).PSendSysMessage("Votre Èquipement a ÈtÈ entiËrement rÈparÈ.");
+                ChatHandler(player->GetSession()).PSendSysMessage("Votre √©quipement a √©t√© enti√®rement r√©par√©.");
                 CloseGossipMenuFor(player);
                 break;
             }
@@ -337,7 +337,7 @@ public:
                     if (elapsed < COOLDOWN_RESET_DELAY)
                     {
                         uint32 remaining = COOLDOWN_RESET_DELAY - elapsed;
-                        ChatHandler(player->GetSession()).PSendSysMessage("Vous devez attendre encore %u seconde(s) avant de rÈinitialiser vos cooldowns.", remaining);
+                        ChatHandler(player->GetSession()).PSendSysMessage("Vous devez attendre encore %u seconde(s) avant de r√©initialiser vos cooldowns.", remaining);
                         CloseGossipMenuFor(player);
                         break;
                     }
@@ -345,7 +345,7 @@ public:
 
                 player->GetSpellHistory()->ResetAllCooldowns();
                 _cooldownResetTracker[player->GetGUID().GetRawValue()] = time(nullptr);
-                ChatHandler(player->GetSession()).PSendSysMessage("Tous vos cooldowns ont ÈtÈ rÈinitialisÈs.");
+                ChatHandler(player->GetSession()).PSendSysMessage("Tous vos cooldowns ont √©t√© r√©initialis√©s.");
                 CloseGossipMenuFor(player);
                 break;
             }

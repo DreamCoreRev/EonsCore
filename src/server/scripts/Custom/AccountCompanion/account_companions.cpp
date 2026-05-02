@@ -24,7 +24,7 @@
 
 class AccountCompanions : public PlayerScript
 {
-    static const bool limitrace = false; // Cette option permet d'apprendre les familiers des personnages de la même équipe.
+    static const bool limitrace = false;
 public:
 	AccountCompanions() : PlayerScript("AccountCompanions") { }
 
