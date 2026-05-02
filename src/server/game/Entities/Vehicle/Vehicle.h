@@ -72,11 +72,6 @@ class TC_GAME_API Vehicle : public TransportBase
 
         Trinity::unique_weak_ptr<Vehicle> GetWeakPtr() const;
 
-    protected:
-        friend class VehicleJoinEvent;
-        uint32 UsableSeatNum;                               ///< Number of seats that match VehicleSeatEntry::UsableByPlayer, used for proper display flags
-
-    private:
         enum Status
         {
             STATUS_NONE,
@@ -84,6 +79,11 @@ class TC_GAME_API Vehicle : public TransportBase
             STATUS_UNINSTALLING,
         };
 
+    protected:
+        friend class VehicleJoinEvent;
+        uint32 UsableSeatNum;                               ///< Number of seats that match VehicleSeatEntry::UsableByPlayer, used for proper display flags
+
+    private:
         SeatMap::iterator GetSeatIteratorForPassenger(Unit* passenger);
         void InitMovementInfoForBase();
 

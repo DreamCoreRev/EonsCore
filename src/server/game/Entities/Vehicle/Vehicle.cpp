@@ -712,6 +712,9 @@ uint8 Vehicle::GetAvailableSeatCount() const
 
 void Vehicle::RemovePendingEvent(VehicleJoinEvent* e)
 {
+    if (_pendingJoinEvents.empty())
+        return;
+
     for (PendingJoinEventContainer::iterator itr = _pendingJoinEvents.begin(); itr != _pendingJoinEvents.end(); ++itr)
     {
         if (*itr == e)
@@ -932,8 +935,12 @@ void VehicleJoinEvent::Abort(uint64)
         TC_LOG_DEBUG("entities.vehicle", "Passenger {}, board on vehicle {} SeatId: {} cancelled",
             Passenger->GetGUID().ToString(), Target->GetBase()->GetGUID().ToString(), (int32)Seat->first);
 
-        /// Remove the pending event when Abort was called on the event directly
-        Target->RemovePendingEvent(this);
+        /// Remove the pending event when Abort was called on the event directly.
+        /// Skip if the vehicle is uninstalling: RemoveAllPassengers() already cleared _pendingJoinEvents,
+        /// and calling RemovePendingEvent here would iterate a list that may be in a partially destroyed state,
+        /// causing an ACCESS_VIOLATION crash (see Map::UnloadGrid -> KillAllEvents -> VehicleJoinEvent::Abort).
+        if (Target->_status != Vehicle::STATUS_UNINSTALLING)
+            Target->RemovePendingEvent(this);
 
         /// @SPELL_AURA_CONTROL_VEHICLE auras can be applied even when the passenger is not (yet) on the vehicle.
         /// When this code is triggered it means that something went wrong in @Vehicle::AddPassenger, and we should remove

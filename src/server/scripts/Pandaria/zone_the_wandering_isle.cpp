@@ -29,6 +29,7 @@
 #include "ObjectDefines.h"
 #include "ObjectMgr.h"
 #include "ScriptedCreature.h"
+#include "EventMap.h"
 #include "ScriptedGossip.h"
 #include "SmartAI.h"
 #include "SmartScript.h"
@@ -71,6 +72,11 @@ public:
     }
 };
 
+enum TushuiEvents
+{
+    EVENT_ENTER_VEHICLE = 1
+};
+
 class npc_tushui_monk : public CreatureScript
 {
 public:
@@ -78,31 +84,70 @@ public:
 
     struct npc_tushui_monkAI : public ScriptedAI
     {
-        npc_tushui_monkAI(Creature* creature) : ScriptedAI(creature) {}
+        npc_tushui_monkAI(Creature* creature) : ScriptedAI(creature), _boarded(false) {}
+
+        EventMap _events;
+        bool _boarded;
 
         void Reset() override
         {
-            std::list<Creature*> poleList;
-            GetCreatureListWithEntryInGrid(poleList, me, 54993, 25.0f);
-
-            if (poleList.empty())
-            {
-                me->DespawnOrUnsummon(1000s);
-                return;
-            }
-
-            Trinity::Containers::MakeIteratorPair(poleList, 1);
-
-            for (auto&& creature : poleList)
-                me->EnterVehicle(creature);
-
+            _boarded = false;
             me->SetFaction(2357);
+
+            _events.ScheduleEvent(EVENT_ENTER_VEHICLE, 500ms);
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            _events.Update(diff);
+
+            while (uint32 eventId = _events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                    case EVENT_ENTER_VEHICLE:
+                    {
+                        if (me->GetVehicle() || _boarded)
+                            return;
+
+                        std::list<Creature*> poleList;
+                        GetCreatureListWithEntryInGrid(poleList, me, 54993, 25.0f);
+
+                        if (poleList.empty())
+                        {
+                            me->DespawnOrUnsummon(1000ms);
+                            return;
+                        }
+
+                        for (Creature* pole : poleList)
+                        {
+                            if (Vehicle* vk = pole->GetVehicleKit())
+                            {
+                                if (vk->GetAvailableSeatCount() > 0)
+                                {
+                                    me->EnterVehicle(pole);
+                                    _boarded = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!_boarded)
+                            me->DespawnOrUnsummon(1000ms);
+
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            }
         }
 
         void JustDied(Unit* /*killer*/) override
         {
+            _events.Reset();
             me->ExitVehicle();
-            me->DespawnOrUnsummon(1000s);
+            me->DespawnOrUnsummon(1000ms);
         }
     };
 
