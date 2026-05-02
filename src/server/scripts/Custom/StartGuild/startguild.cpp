@@ -1,6 +1,6 @@
 /* ------------------------------------ */
-/* AUTHOR   Aurøra                      */
-/*    FOR   Syphrena Private Server     */
+/* AUTHOR   Aurora                      */
+/*    FOR   Eons Private Server         */
 /* ------------------------------------ */
 
 #include "ScriptMgr.h"

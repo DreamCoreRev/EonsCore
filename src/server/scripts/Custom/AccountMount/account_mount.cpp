@@ -27,7 +27,7 @@
 
 class AccountMounts : public PlayerScript
 {
-    static const bool limitrace = false; // Cette option, réglée sur true, n'apprendra les montures qu'aux personnages de la même équipe.
+    static const bool limitrace = false;
 public:
     AccountMounts() : PlayerScript("AccountMounts") { }
 
@@ -66,6 +66,8 @@ public:
         for (auto& i : Spells)
         {
             auto sSpell = sSpellStore.LookupEntry(i);
+            if (!sSpell)
+                continue;
             uint32 spellEffect = sSpell->Effect[0];
             uint32 spellAura = sSpell->EffectAmplitude[0];
 

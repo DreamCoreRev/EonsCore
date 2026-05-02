@@ -64,9 +64,7 @@ enum Trainers
     WARLOCK_H   = 3324,
     WARRIOR_H   = 3354,
 
-    DEATHKNIGHT_AH = 28472,
-    BLOODMAGE_AH = 300049,
-    DEMON_HUNTER_AH = 150318
+    DEATHKNIGHT_AH = 28472
 };
 
 enum Mounts
@@ -80,7 +78,9 @@ enum Mounts
     TAUREN_MOUNT              = 22718,
     TROLL_MOUNT               = 22721,
     BLOODELF_MOUNT            = 65639,
-    DRAENEI_MOUNT             = 48027
+    DRAENEI_MOUNT             = 48027,
+    PANDAREN_ALLIANCE_MOUNT   = 150050,
+    PANDAREN_HORDE_MOUNT      = 150050
 };
 
 // Cooldown duration (in seconds) before a player can reset spell cooldowns again
@@ -127,9 +127,7 @@ public:
             player->FindNearestCreature(MAGE_H, rangeCheck) ||
             player->FindNearestCreature(PRIEST_H, rangeCheck) ||
             player->FindNearestCreature(DRUID_H, rangeCheck) ||
-            player->FindNearestCreature(DEATHKNIGHT_AH, rangeCheck) ||
-            player->FindNearestCreature(BLOODMAGE_AH, rangeCheck) ||
-            player->FindNearestCreature(DEMON_HUNTER_AH, rangeCheck))
+            player->FindNearestCreature(DEATHKNIGHT_AH, rangeCheck))
             return false;
 
         ClearGossipMenuFor(player);
@@ -235,10 +233,12 @@ public:
                     case RACE_NIGHTELF:               player->CastSpell(player, NIGHTELF_MOUNT); break;
                     case RACE_DWARF:                  player->CastSpell(player, DWARF_MOUNT); break;
                     case RACE_DRAENEI:                player->CastSpell(player, DRAENEI_MOUNT); break;
+                    case RACE_PANDAREN_ALLIANCE:      player->CastSpell(player, PANDAREN_ALLIANCE_MOUNT); break;
                     case RACE_UNDEAD_PLAYER:          player->CastSpell(player, UNEAD_MOUNT); break;
                     case RACE_TAUREN:                 player->CastSpell(player, TAUREN_MOUNT); break;
                     case RACE_TROLL:                  player->CastSpell(player, TROLL_MOUNT); break;
                     case RACE_BLOODELF:               player->CastSpell(player, BLOODELF_MOUNT); break;
+                    case RACE_PANDAREN_HORDE:         player->CastSpell(player, PANDAREN_HORDE_MOUNT); break;
                 }
                 break;
             }
@@ -324,7 +324,7 @@ public:
             case GOSSIP_ACTION_INFO_DEF + 10: /*Repair All Equipment*/
             {
                 player->DurabilityRepairAll(false, 0.0f, false);
-                ChatHandler(player->GetSession()).PSendSysMessage("Votre équipement a été entièrement réparé.");
+                ChatHandler(player->GetSession()).PSendSysMessage("Votre equipement a ete entierement repare.");
                 CloseGossipMenuFor(player);
                 break;
             }
@@ -337,7 +337,7 @@ public:
                     if (elapsed < COOLDOWN_RESET_DELAY)
                     {
                         uint32 remaining = COOLDOWN_RESET_DELAY - elapsed;
-                        ChatHandler(player->GetSession()).PSendSysMessage("Vous devez attendre encore %u seconde(s) avant de réinitialiser vos cooldowns.", remaining);
+                        ChatHandler(player->GetSession()).PSendSysMessage("Vous devez attendre encore %u seconde(s) avant de reinitialiser vos cooldowns.", remaining);
                         CloseGossipMenuFor(player);
                         break;
                     }
@@ -345,7 +345,7 @@ public:
 
                 player->GetSpellHistory()->ResetAllCooldowns();
                 _cooldownResetTracker[player->GetGUID().GetRawValue()] = time(nullptr);
-                ChatHandler(player->GetSession()).PSendSysMessage("Tous vos cooldowns ont été réinitialisés.");
+                ChatHandler(player->GetSession()).PSendSysMessage("Tous vos cooldowns ont ete reinitialises.");
                 CloseGossipMenuFor(player);
                 break;
             }
@@ -401,12 +401,15 @@ public:
             npcDuration = 60;
 
         Creature* npc = player->SummonCreature(entry, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 60s);
+        if (!npc)
+            return;
+
         npc->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         npc->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, player->GetFollowAngle());
         npc->SetFaction(player->GetFaction());
 
         if (salute && !(salute[0] == '\0'))
-            npc->Whisper(salute, LANG_UNIVERSAL, player, false);;
+            npc->Whisper(salute, LANG_UNIVERSAL, player, false);
     }
 
 private:

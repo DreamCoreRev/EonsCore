@@ -25,10 +25,10 @@
 
 class AccountAchievements : public PlayerScript
 {
-	static const bool limitrace = true; // Ce réglage à true ne permet d'obtenir que les succès des personnages de la même équipe, faites ce que vous voulez. IL N'EST PAS RECOMMANDÉ DE LE CHANGER !!!
-	static const bool limitlevel = false; // Cette fonction vérifie le niveau du joueur et n'ajoutera des réalisations qu'aux joueurs de ce niveau.
-	int minlevel = 80; // Il est fixé aux joueurs de niveau 60. Nécessite que limitlevel soit réglé sur true.
-	int setlevel = 1; // Ne pas changer
+	static const bool limitrace = true;
+	static const bool limitlevel = false;
+	int minlevel = 80;
+	int setlevel = 1;
 
 public:
 	AccountAchievements() : PlayerScript("AccountAchievements") { }
@@ -65,11 +65,13 @@ public:
 			} while (result2->NextRow());
 		}
 
-		for (auto& i : Achievement)
-		{
-			auto sAchievement = sAchievementStore.LookupEntry(i);
-				AddAchievements(pPlayer, sAchievement->ID);
-		}
+        for (auto& i : Achievement)
+        {
+            auto sAchievement = sAchievementStore.LookupEntry(i);
+            if (!sAchievement)
+                continue;
+            AddAchievements(pPlayer, sAchievement->ID);
+        }
 	}
 
 	void AddAchievements(Player* player, uint32 AchievementID)
@@ -82,7 +84,7 @@ public:
 	}
 };
 
-void AddSC_accountachievement()
+void AddSC_AccountAchievements()
 {
 	new AccountAchievements();
 }

@@ -3405,6 +3405,7 @@ void SpellMgr::LoadSpellInfoCorrections()
         65917, // Magic Rooster
         71342, // Big Love Rocket
         72286, // Invincible
+        150050, // Ban-lu, Grandmaster's Companion
         74856, // Blazing Hippogryph
         75614, // Celestial Steed
         75973  // X-53 Touring Rocket

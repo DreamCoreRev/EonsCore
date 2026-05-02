@@ -17,7 +17,7 @@
 
 // This is where scripts' loading functions should be declared:
 
-void AddSC_accountachievement();
+void AddSC_AccountAchievements();
 void AddSC_AccountCompanions();
 void AddSC_AccountMounts();
 void AddLfgSoloScripts();
@@ -29,7 +29,7 @@ void AddSC_XpWeekend();
 // void Add${NameOfDirectory}Scripts()
 void AddCustomScripts()
 {
-	AddSC_accountachievement();
+    AddSC_AccountAchievements();
 	AddSC_AccountCompanions();
 	AddSC_AccountMounts();
 	AddLfgSoloScripts();

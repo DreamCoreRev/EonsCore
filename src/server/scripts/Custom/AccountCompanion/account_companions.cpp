@@ -60,12 +60,14 @@ public:
                } while (result2->NextRow());
            }
 
-		for (auto& i : Spells)
-		{
-			auto sSpell = sSpellStore.LookupEntry(i);
-			 if (sSpell->Effect[0] == SPELL_EFFECT_SUMMON && sSpell->EffectMiscValueB[0] == 41)
-			 pPlayer->LearnSpell(sSpell->ID, false);
-		}
+           for (auto& i : Spells)
+           {
+               auto sSpell = sSpellStore.LookupEntry(i);
+               if (!sSpell)
+                   continue;
+               if (sSpell->Effect[0] == SPELL_EFFECT_SUMMON && sSpell->EffectMiscValueB[0] == 41)
+                   pPlayer->LearnSpell(sSpell->ID, false);
+           }
 	}
 };
 

@@ -2318,6 +2318,12 @@ enum Mounts
     SPELL_INVINCIBLE_150                = 72283,
     SPELL_INVINCIBLE_310                = 72284,
 
+    // Ban-lu, Grandmaster's Companion
+    SPELL_BANLU_60                      = 150051,
+    SPELL_BANLU_100                     = 150052,
+    SPELL_BANLU_150                     = 150053,
+    SPELL_BANLU_310                     = 150055,
+
     // Blazing Hippogryph
     SPELL_BLAZING_HIPPOGRYPH_150        = 74854,
     SPELL_BLAZING_HIPPOGRYPH_280        = 74855,
@@ -4818,6 +4824,7 @@ void AddSC_generic_spell_scripts()
     RegisterSpellScriptWithArgs(spell_gen_mount, "spell_big_blizzard_bear", 0, SPELL_BIG_BLIZZARD_BEAR_60, SPELL_BIG_BLIZZARD_BEAR_100);
     RegisterSpellScriptWithArgs(spell_gen_mount, "spell_big_love_rocket", SPELL_BIG_LOVE_ROCKET_0, SPELL_BIG_LOVE_ROCKET_60, SPELL_BIG_LOVE_ROCKET_100, SPELL_BIG_LOVE_ROCKET_150, SPELL_BIG_LOVE_ROCKET_310);
     RegisterSpellScriptWithArgs(spell_gen_mount, "spell_invincible", 0, SPELL_INVINCIBLE_60, SPELL_INVINCIBLE_100, SPELL_INVINCIBLE_150, SPELL_INVINCIBLE_310);
+    RegisterSpellScriptWithArgs(spell_gen_mount, "spell_banlu", 0, SPELL_BANLU_60, SPELL_BANLU_100, SPELL_BANLU_150, SPELL_BANLU_310);
     RegisterSpellScriptWithArgs(spell_gen_mount, "spell_blazing_hippogryph", 0, 0, 0, SPELL_BLAZING_HIPPOGRYPH_150, SPELL_BLAZING_HIPPOGRYPH_280);
     RegisterSpellScriptWithArgs(spell_gen_mount, "spell_celestial_steed", 0, SPELL_CELESTIAL_STEED_60, SPELL_CELESTIAL_STEED_100, SPELL_CELESTIAL_STEED_150, SPELL_CELESTIAL_STEED_280, SPELL_CELESTIAL_STEED_310);
     RegisterSpellScriptWithArgs(spell_gen_mount, "spell_x53_touring_rocket", 0, 0, 0, SPELL_X53_TOURING_ROCKET_150, SPELL_X53_TOURING_ROCKET_280, SPELL_X53_TOURING_ROCKET_310);
