@@ -245,24 +245,7 @@ public:
 
         void WaypointReached(uint32 /*nodeId*/, uint32 /*pathId*/)
         {
-            /*switch (waypointId)
-            {
-            case 11:
-                RemoveNpcPassengers();
-                break;
-            case 12:
-            {
-                auto const passenger = me->GetVehicleKit()->GetPassenger(0);
-                if (passenger && passenger->GetTypeId() == TYPEID_PLAYER)
-                {
-                    passenger->ToPlayer()->KilledMonsterCredit(55939);
-                    passenger->AddAura(50550, passenger);
-                }
-
-                me->GetVehicleKit()->RemoveAllPassengers();
-                break;
-            }
-            }*/
+            
         }
 
         /*
@@ -271,7 +254,7 @@ public:
             seat 2 = Aysa Cloudsinger
         */
 
-        void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 /*diff*/) override
         {
             if (playerGUID == 0)
             {
@@ -279,17 +262,11 @@ public:
                 me->DespawnOrUnsummon();
                 return;
             }
-
-            
-
-            //CreatureAI::UpdateAI(diff);
         }
 
-        void PassengerTalk(uint32 talkId, uint32 seatId)
+        void PassengerTalk(uint32 /*talkId*/, uint32 /*seatId*/)
         {
-            //if (Unit* unit = me->GetVehicleKit()->GetPassenger(seatId))
-                //if (Creature* creature = unit->ToCreature())
-                    //creature->AI()->Talk(talkId, ObjectAccessor::GetPlayer(*me, playerGUID));
+            
         }
 
         void PassengerBoarded(Unit* passenger, int8 seatId, bool apply) override
@@ -301,10 +278,10 @@ public:
             {
                 auto const player = passenger->ToPlayer();
 
-                if (auto const firepaw = player->FindNearestCreature(56660, player->GetPositionX(), TEMPSUMMON_TIMED_DESPAWN))
+                if (auto const firepaw = player->FindNearestCreature(56660, player->GetPositionX()))
                     firepaw->EnterVehicle(me, 1);
 
-                if (auto const aysa = player->FindNearestCreature(56662, player->GetPositionX(), TEMPSUMMON_TIMED_DESPAWN))
+                if (auto const aysa = player->FindNearestCreature(56662, player->GetPositionX()))
                     aysa->EnterVehicle(me, 2);
 
                 //playerGUID = player->GetGUID();
@@ -337,9 +314,8 @@ public:
             PreventHitAura();
 
             if (Unit* caster = GetCaster())
-                if (Creature* balloon = caster->FindNearestCreature(55649, 915.55f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* balloon = caster->FindNearestCreature(55649, TEMPSUMMON_MANUAL_DESPAWN))
                 {
-                    //balloon->SetExplicitSeerGuid(caster->GetGUID());
                     caster->EnterVehicle(balloon, 0);
                 }
         }
@@ -525,36 +501,9 @@ public:
             EVENT_SHEN_ZI_SU_TALK_5 = 25, //17:27:09.000
         };
 
-        void InitTalking(Player* player)
+        void InitTalking(Player* /*player*/)
         {
-            me->GetMap()->LoadGrid(865.222f, 4986.84f); //voice
-            me->GetMap()->LoadGrid(868.356f, 4631.19f); //head
-
-            uint32 t = 3000;
-            events.ScheduleEvent(EVENT_FIREPAW_TALK_0, 1000s);       //17:24:47.000
-            events.ScheduleEvent(EVENT_AISA_TALK_0, 4000s);          //17:24:51.000
-            events.ScheduleEvent(EVENT_FIREPAW_TALK_1, 6000s);       //17:24:57.000
-            events.ScheduleEvent(EVENT_AISA_TALK_1, 10000s);         //17:25:07.000
-            events.ScheduleEvent(EVENT_FIREPAW_TALK_2, 6000s);       //17:25:13.000
-            events.ScheduleEvent(EVENT_AISA_TALK_2, 5000s);          //17:25:18.000
-            events.ScheduleEvent(EVENT_AISA_TALK_3, 14000s);         //17:25:31.000
-            events.ScheduleEvent(EVENT_AISA_TALK_4, 6000s);          //17:25:38.000
-            events.ScheduleEvent(EVENT_SHEN_ZI_SU_TALK_0, 6000s);    //17:25:44.000
-            events.ScheduleEvent(EVENT_SHEN_ZI_SU_TALK_1, 14000s);   //17:25:58.000
-            events.ScheduleEvent(EVENT_SHEN_ZI_SU_TALK_2, 14000s);   //17:26:12.000
-            events.ScheduleEvent(EVENT_SHEN_ZI_SU_TALK_3, 13000s);   //17:26:25.000
-            events.ScheduleEvent(EVENT_AISA_TALK_5, 15000s);         //17:26:40.000
-            events.ScheduleEvent(EVENT_SHEN_ZI_SU_TALK_4, 7000s);    //17:26:47.000 
-            events.ScheduleEvent(EVENT_AISA_TALK_6, 15000s);         //17:27:02.000
-            events.ScheduleEvent(EVENT_SHEN_ZI_SU_TALK_5, 7000s);    //17:27:09.000
-            events.ScheduleEvent(EVENT_FIREPAW_TALK_3, 7000s);       //17:27:16.000
-            events.ScheduleEvent(EVENT_FIREPAW_TALK_4, 6000s);       //17:27:22.000
-            events.ScheduleEvent(EVENT_AISA_TALK_7, 7000s);          //17:27:29.000
-            events.ScheduleEvent(EVENT_FIREPAW_TALK_5, 14000s);      //17:27:43.000
-            events.ScheduleEvent(EVENT_AISA_TALK_8, 7000s);          //17:27:50.000
-            events.ScheduleEvent(EVENT_FIREPAW_TALK_6, 7000s);       //17:27:57.000
-            events.ScheduleEvent(EVENT_AISA_TALK_9, 7000s);          //17:28:04.000
-            events.ScheduleEvent(EVENT_AISA_TALK_10, 7000s);         //17:28:10.000
+            
         }
 
         void PassengerBoarded(Unit* passenger, int8 seatId, bool apply)
@@ -634,43 +583,25 @@ public:
                 }
                 if (text == 5) // restore emote
                 {
-                    head->SetUInt32Value(UNIT_NPC_EMOTESTATE, ANIM_FLY_LAND);   //hack
-                    //plr->RemoveFromExtraLook(head->GetGUID());
+                    head->SetUInt32Value(UNIT_NPC_EMOTESTATE, ANIM_FLY_LAND);
                 }
             }
             sCreatureTextMgr->SendChat(shen, text);
         }
 
-        void IsSummonedBy(WorldObject* summoner)
+        void IsSummonedBy(WorldObject* /*summoner*/)
         {
-            //me->SetTarget(summoner->GetGUID());
-            //playerGuid = summoner->GetGUID();
-            //summoner->EnterVehicle(me, 0);
-            //events.ScheduleEvent(EVENT_1, 1000s);
+           
         }
 
         void WaypointReached(uint32 /*nodeId*/, uint32 /*pathId*/)
         {
-            /*switch (waypointId)
-            {
-            case 8:
-                me->SetSpeed(MOVE_FLIGHT, 8.0f);
-                break;
-            case 15:
-            {
-                if (Player* plr = ObjectAccessor::FindPlayer(playerGuid))
-                    me->CastSpell(plr, SPELL_CREDIT_2, true);
-                break;
-            }
-            default:
-                break;
-            }*/
+           
         }
 
         void UpdateAI(uint32 diff) override
         {
             events.Update(diff);
-            //CreatureAI::UpdateAI(diff);
 
             while (uint32 eventId = events.ExecuteEvent())
             {
@@ -681,7 +612,6 @@ public:
                     if (Creature* f = me->FindNearestCreature(NPC_AISA, 100.0f, true))
                         f->CastSpell(me, SPELL_AISA_ENTER_SEAT_2, true);
 
-                    //Start(false, true);
                     break;
                 }
                 case EVENT_AISA_TALK_3:
