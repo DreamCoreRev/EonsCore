@@ -284,8 +284,6 @@ public:
                 if (auto const aysa = player->FindNearestCreature(56662, player->GetPositionX()))
                     aysa->EnterVehicle(me, 2);
 
-                //playerGUID = player->GetGUID();
-
                 player->KilledMonsterCredit(56378);
             }
             else
@@ -565,7 +563,7 @@ public:
 
                 switch (text)
                 {
-                    //cast 114888                      //17:25:31.000
+                    //cast 114888                  //17:25:31.000
                 case 0:                            //17:25:44.000
                     plr->CastSpell(shen, SPELL_HEAD_ANIM_1, false);
                     break;
@@ -619,7 +617,7 @@ public:
                         if (Player* plr = ObjectAccessor::FindPlayer(playerGuid))
                         {
                             plr->CastSpell(plr, SPELL_HEAD_ANIM_RISE, false);    //17:25:31.000
-                            head->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);  //hack
+                            head->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
                         }
                 case EVENT_AISA_TALK_0:
                 case EVENT_AISA_TALK_1:
