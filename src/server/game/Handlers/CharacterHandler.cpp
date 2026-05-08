@@ -1825,7 +1825,7 @@ void WorldSession::HandleCharRaceOrFactionChangeCallback(std::shared_ptr<WorldPa
                     stmt->setUInt16(1, 113);
                     break;
                 case RACE_PANDAREN_ALLIANCE:
-                    stmt->setUInt16(1, 113);
+                    stmt->setUInt16(1, 906);
                     break;
                 case RACE_UNDEAD_PLAYER:
                     stmt->setUInt16(1, 673);
@@ -1840,7 +1840,7 @@ void WorldSession::HandleCharRaceOrFactionChangeCallback(std::shared_ptr<WorldPa
                     stmt->setUInt16(1, 137);
                     break;
                 case RACE_PANDAREN_HORDE:
-                    stmt->setUInt16(1, 115);
+                    stmt->setUInt16(1, 907);
                     break;
             }
 
