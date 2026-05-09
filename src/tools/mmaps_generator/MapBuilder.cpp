@@ -988,6 +988,7 @@ namespace MMAP
                 case 566:   // EotS
                 case 607:   // SotA
                 case 628:   // IoC
+                case 730:   // Twin Peaks
                     return true;
                 default:
                     break;

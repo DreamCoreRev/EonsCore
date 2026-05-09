@@ -55,7 +55,11 @@ enum ScoreType
 
     // SOTA
     SCORE_DESTROYED_DEMOLISHER  = 16,
-    SCORE_DESTROYED_WALL        = 17
+    SCORE_DESTROYED_WALL        = 17,
+    
+    //VOP
+    SCORE_ORB_CONTROL           = 20,
+    SCORE_ORB_SCORE             = 21
 };
 
 struct BattlegroundScore
@@ -65,7 +69,7 @@ struct BattlegroundScore
 
     protected:
         BattlegroundScore(ObjectGuid playerGuid) : PlayerGuid(playerGuid), KillingBlows(0), Deaths(0),
-            HonorableKills(0), BonusHonor(0), DamageDone(0), HealingDone(0) { }
+            HonorableKills(0), BonusHonor(0), DamageDone(0), HealingDone(0), OrbControl(0), OrbScore(0) { }
 
         virtual ~BattlegroundScore() { }
 
@@ -90,6 +94,12 @@ struct BattlegroundScore
                     break;
                 case SCORE_HEALING_DONE:    // Healing Done
                     HealingDone += value;
+                    break;
+                case SCORE_ORB_CONTROL:    // OrbControl Done
+                    OrbControl += value;
+                    break;
+                case SCORE_ORB_SCORE:    // OrbScore Done
+                    OrbScore += value;
                     break;
                 default:
                     ABORT_MSG("Not implemented Battleground score type!");
@@ -125,6 +135,8 @@ struct BattlegroundScore
         uint32 BonusHonor;
         uint32 DamageDone;
         uint32 HealingDone;
+        uint32 OrbControl;
+        uint32 OrbScore;
 };
 
 #endif // TRINITY_BATTLEGROUND_SCORE_H

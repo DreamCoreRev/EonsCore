@@ -28,6 +28,11 @@
 #include "BattlegroundDS.h"
 #include "BattlegroundRV.h"
 #include "BattlegroundIC.h"
+#include "BattlegroundBFG.h"
+#include "BattlegroundTP.h"
+#include "BattlegroundVOP.h"
+#include "BattlegroundTTP.h"
+#include "BattlegroundTV.h"
 #include "BattlegroundPackets.h"
 #include "Common.h"
 #include "Containers.h"
@@ -376,6 +381,21 @@ Battleground* BattlegroundMgr::CreateNewBattleground(BattlegroundTypeId original
         case BATTLEGROUND_IC:
             bg = new BattlegroundIC(*(BattlegroundIC*)bg_template);
             break;
+        case BATTLEGROUND_BFG:
+            bg = new BattlegroundBFG(*(BattlegroundBFG*)bg_template);
+            break;
+        case BATTLEGROUND_TP:
+            bg = new BattlegroundTP(*(BattlegroundTP*)bg_template);
+            break;
+        case BATTLEGROUND_TV:
+            bg = new BattlegroundTV(*(BattlegroundTV*)bg_template);
+            break;
+        case BATTLEGROUND_VOP:
+            bg = new BattlegroundVOP(*(BattlegroundVOP*)bg_template);
+            break;
+        case BATTLEGROUND_TTP:
+            bg = new BattlegroundTTP(*(BattlegroundTTP*)bg_template);
+            break;
         case BATTLEGROUND_RB:
         case BATTLEGROUND_AA:
         default:
@@ -460,6 +480,21 @@ bool BattlegroundMgr::CreateBattleground(BattlegroundTemplate const* bgTemplate)
                 break;
             case BATTLEGROUND_IC:
                 bg = new BattlegroundIC();
+                break;
+            case BATTLEGROUND_BFG:
+                bg = new BattlegroundBFG();
+                break;
+            case BATTLEGROUND_TP:
+                bg = new BattlegroundTP();
+                break;
+            case BATTLEGROUND_TV:
+                bg = new BattlegroundTV();
+                break;
+            case BATTLEGROUND_VOP:
+                bg = new BattlegroundVOP();
+                break;
+            case BATTLEGROUND_TTP:
+                bg = new BattlegroundTTP();
                 break;
             case BATTLEGROUND_AA:
                 bg = new Battleground();
@@ -688,7 +723,9 @@ bool BattlegroundMgr::IsArenaType(BattlegroundTypeId bgTypeId)
             || bgTypeId == BATTLEGROUND_NA
             || bgTypeId == BATTLEGROUND_DS
             || bgTypeId == BATTLEGROUND_RV
-            || bgTypeId == BATTLEGROUND_RL;
+            || bgTypeId == BATTLEGROUND_RL
+            || bgTypeId == BATTLEGROUND_TV
+            || bgTypeId == BATTLEGROUND_TTP;
 }
 
 bool BattlegroundMgr::IsRandomBattleground(uint32 battlemasterListId)
@@ -856,6 +893,9 @@ HolidayIds BattlegroundMgr::BGTypeToWeekendHolidayId(BattlegroundTypeId bgTypeId
         case BATTLEGROUND_SA: return HOLIDAY_CALL_TO_ARMS_SA;
         case BATTLEGROUND_AB: return HOLIDAY_CALL_TO_ARMS_AB;
         case BATTLEGROUND_IC: return HOLIDAY_CALL_TO_ARMS_IC;
+        case BATTLEGROUND_BFG: return HOLIDAY_CALL_TO_ARMS_BFG;
+        case BATTLEGROUND_TP: return HOLIDAY_CALL_TO_ARMS_TP;
+        case BATTLEGROUND_VOP: return HOLIDAY_CALL_TO_ARMS_VOP;
         default: return HOLIDAY_NONE;
     }
 }
@@ -870,6 +910,9 @@ BattlegroundTypeId BattlegroundMgr::WeekendHolidayIdToBGType(HolidayIds holiday)
         case HOLIDAY_CALL_TO_ARMS_SA: return BATTLEGROUND_SA;
         case HOLIDAY_CALL_TO_ARMS_AB: return BATTLEGROUND_AB;
         case HOLIDAY_CALL_TO_ARMS_IC: return BATTLEGROUND_IC;
+        case HOLIDAY_CALL_TO_ARMS_BFG: return BATTLEGROUND_BFG;
+        case HOLIDAY_CALL_TO_ARMS_TP: return BATTLEGROUND_TP;
+        case HOLIDAY_CALL_TO_ARMS_VOP: return BATTLEGROUND_VOP;
         default: return BATTLEGROUND_TYPE_NONE;
     }
 }

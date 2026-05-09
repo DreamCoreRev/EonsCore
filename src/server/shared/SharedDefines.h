@@ -2904,7 +2904,10 @@ enum HolidayIds
     HOLIDAY_DAY_OF_DEAD              = 409,
     HOLIDAY_CALL_TO_ARMS_IC          = 420,
     HOLIDAY_LOVE_IS_IN_THE_AIR       = 423,
-    HOLIDAY_KALU_AK_FISHING_DERBY    = 424
+    HOLIDAY_KALU_AK_FISHING_DERBY    = 424,
+    HOLIDAY_CALL_TO_ARMS_BFG         = 435,
+    HOLIDAY_CALL_TO_ARMS_TP          = 436,
+    HOLIDAY_CALL_TO_ARMS_VOP         = 489 // 496
 };
 
 // values based at QuestInfo.dbc
@@ -3628,10 +3631,15 @@ enum BattlegroundTypeId : uint32
     BATTLEGROUND_DS             = 10, // Dalaran Sewers
     BATTLEGROUND_RV             = 11, // Ring of Valor
     BATTLEGROUND_IC             = 30, // Isle of Conquest
-    BATTLEGROUND_RB             = 32  // Random Battleground
+    BATTLEGROUND_RB             = 32, // Random Battleground
+    BATTLEGROUND_TP             = 108, // Twin Peaks
+    BATTLEGROUND_TV             = 109, // 5.x Tol'Vir Arena
+    BATTLEGROUND_TTP            = 110, // 5.x The Tiger's Peak
+    BATTLEGROUND_BFG            = 120, // Battle For Gilneas
+    BATTLEGROUND_VOP            = 121  // Valley of Power 
 };
 
-#define MAX_BATTLEGROUND_TYPE_ID 33
+#define MAX_BATTLEGROUND_TYPE_ID 122
 
 enum BattlefieldBattleId : uint8
 {
