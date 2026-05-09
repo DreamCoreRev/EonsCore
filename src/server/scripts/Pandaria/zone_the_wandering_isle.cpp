@@ -297,94 +297,36 @@ public:
     }
 };
 
-class mob_aisa_pre_balon_event : public CreatureScript
+// Grab Air Balloon - 95247
+class spell_grab_air_balloon : public SpellScriptLoader
 {
 public:
-    mob_aisa_pre_balon_event() : CreatureScript("mob_aisa_pre_balon_event") {}
+    spell_grab_air_balloon() : SpellScriptLoader("spell_grab_air_balloon") {}
 
-    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
+    class spell_grab_air_balloon_SpellScript : public SpellScript
     {
-        if (quest->GetQuestId() == 29791)
-            sCreatureTextMgr->SendChat(creature, 1);
+        PrepareSpellScript(spell_grab_air_balloon_SpellScript);
 
-        creature->CastSpell(player, 95247, true);
-        player->CastSpell(player, 95247, true);
-        return true;
-    }
-
-    struct mob_aisa_pre_balon_eventAI : public ScriptedAI
-    {
-        mob_aisa_pre_balon_eventAI(Creature* creature) : ScriptedAI(creature) {}
-
-        bool justSpeaking;
-        EventMap _events;
-        GuidSet m_player_for_event;
-
-        enum events
+        void HandleScriptEffect(SpellEffIndex /*effIndex*/)
         {
-            EVENT_1 = 1,
-            EVENT_2 = 2,
-            EVENT_3 = 3,
+            PreventHitAura();
 
-            NPC_FRIEND = 56663,
-        };
-
-        void Reset() override
-        {
-            justSpeaking = false;
+            if (Unit* caster = GetCaster())
+                if (Creature* balloon = caster->FindNearestCreature(55649, TEMPSUMMON_MANUAL_DESPAWN))
+                {
+                    caster->EnterVehicle(balloon, 0);
+                }
         }
 
-        void MoveInLineOfSight(Unit* who) override
+        void Register() override
         {
-            if (justSpeaking || who->GetTypeId() != TYPEID_PLAYER || who->IsOnVehicle(0))
-                return;
-
-            GuidSet::iterator itr = m_player_for_event.find(who->GetGUID());
-
-            if (itr != m_player_for_event.end())
-                return;
-
-            if (who->ToPlayer()->GetQuestStatus(29790) != QUEST_STATUS_COMPLETE)
-                return;
-
-            m_player_for_event.insert(who->GetGUID());
-            justSpeaking = true;
-            _events.ScheduleEvent(EVENT_1, 10000s);
-            sCreatureTextMgr->SendChat(me, 0);
-
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            _events.Update(diff);
-
-            while (uint32 eventId = _events.ExecuteEvent())
-            {
-                switch (eventId)
-                {
-                case EVENT_1:
-                {
-                    _events.ScheduleEvent(EVENT_2, 8000s);
-
-                    if (Creature* f = me->FindNearestCreature(NPC_FRIEND, 100.0f, true))
-                    {
-                        sCreatureTextMgr->SendChat(f, 0);
-                        f->SetFacingToObject(me);
-                    }
-                    break;
-                }
-                case EVENT_2:
-                    sCreatureTextMgr->SendChat(me, 2);
-                    justSpeaking = false;
-                    break;
-                }
-            }
+            OnEffectLaunchTarget += SpellEffectFn(spell_grab_air_balloon_SpellScript::HandleScriptEffect, EFFECT_0, SPELL_EFFECT_APPLY_AURA);
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const override
+    SpellScript* GetSpellScript() const override
     {
-        return new mob_aisa_pre_balon_eventAI(creature);
+        return new spell_grab_air_balloon_SpellScript();
     }
 };
 
@@ -639,6 +581,6 @@ void AddSC_zone_the_wandering_isle()
     new npc_tushui_monk();
     new spell_rock_jump();
     new npc_shang_xi_air_balloon();
-    new mob_aisa_pre_balon_event();
+    new spell_grab_air_balloon();
     new mop_air_balloon();
 }
