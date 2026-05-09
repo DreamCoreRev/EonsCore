@@ -2184,7 +2184,7 @@ void GameObject::Use(Unit* user)
                 // WS:
                 // 179785 - Silverwing Flag
                 // 179786 - Warsong Flag
-                // TP:
+				// TP:
                 // 208208 - Twin Peaks Alliance Flag
                 // 208209 - Twin Peaks Horde Flag
                 // EotS:
@@ -2199,7 +2199,7 @@ void GameObject::Use(Unit* user)
                             if (bg->GetTypeID(true) == BATTLEGROUND_WS)
                                 bg->EventPlayerClickedOnFlag(player, this);
                             break;
-                        case 208208:                        // Twin Peaks Alliance Flag
+						case 208208:                        // Twin Peaks Alliance Flag
                         case 208209:                        // Twin Peaks Horde Flag
                             if (bg->GetTypeID(true) == BATTLEGROUND_TP)
                                 bg->EventPlayerClickedOnFlag(player, this);
