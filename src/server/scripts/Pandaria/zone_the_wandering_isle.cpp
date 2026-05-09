@@ -207,36 +207,93 @@ Position rocksPos[4] =
     {1111.52f, 2849.84f, 94.84f, 1.94f}
 };
 
-// Grab Air Balloon - 95247
-class spell_grab_air_balloon : public SpellScriptLoader
+class npc_shang_xi_air_balloon : public CreatureScript
 {
 public:
-    spell_grab_air_balloon() : SpellScriptLoader("spell_grab_air_balloon") {}
+    npc_shang_xi_air_balloon() : CreatureScript("npc_shang_xi_air_balloon") {}
 
-    class spell_grab_air_balloon_SpellScript : public SpellScript
+    struct npc_shang_xi_air_balloonAI : public CreatureAI
     {
-        PrepareSpellScript(spell_grab_air_balloon_SpellScript);
+        npc_shang_xi_air_balloonAI(Creature* creature) : CreatureAI(creature) {}
 
-        void HandleScriptEffect(SpellEffIndex /*effIndex*/)
+        uint64 playerGUID;
+        uint32 eventTimer;
+        uint32 phase;
+
+        void Reset() override
         {
-            PreventHitAura();
+            playerGUID = 0;
+            eventTimer = 250;
+            phase = 0;
 
-            if (Unit* caster = GetCaster())
-                if (Creature* balloon = caster->FindNearestCreature(55649, TEMPSUMMON_MANUAL_DESPAWN))
-                {
-                    caster->EnterVehicle(balloon, 0);
-                }
+            me->setActive(true);
+            me->SetReactState(REACT_PASSIVE);
         }
 
-        void Register() override
+        void RemoveNpcPassengers()
         {
-            OnEffectLaunchTarget += SpellEffectFn(spell_grab_air_balloon_SpellScript::HandleScriptEffect, EFFECT_0, SPELL_EFFECT_APPLY_AURA);
+            for (auto i = 1; i != 3; ++i)
+            {
+                auto const passenger = me->GetVehicleKit()->GetPassenger(i);
+                if (!passenger)
+                    continue;
+
+                passenger->ExitVehicle();
+                passenger->ToCreature()->DespawnOrUnsummon(1000s);
+            }
+        }
+
+        void WaypointReached(uint32 /*nodeId*/, uint32 /*pathId*/)
+        {
+            
+        }
+
+        /*
+            seat 0 = player
+            seat 1 = Ji Firepaw
+            seat 2 = Aysa Cloudsinger
+        */
+
+        void UpdateAI(uint32 /*diff*/) override
+        {
+            if (playerGUID == 0)
+            {
+                RemoveNpcPassengers();
+                me->DespawnOrUnsummon();
+                return;
+            }
+        }
+
+        void PassengerTalk(uint32 /*talkId*/, uint32 /*seatId*/)
+        {
+            
+        }
+
+        void PassengerBoarded(Unit* passenger, int8 seatId, bool apply) override
+        {
+            if (seatId != 0 || passenger->GetTypeId() != TYPEID_PLAYER)
+                return;
+
+            if (apply)
+            {
+                auto const player = passenger->ToPlayer();
+
+                if (auto const firepaw = player->FindNearestCreature(56660, player->GetPositionX()))
+                    firepaw->EnterVehicle(me, 1);
+
+                if (auto const aysa = player->FindNearestCreature(56662, player->GetPositionX()))
+                    aysa->EnterVehicle(me, 2);
+
+                player->KilledMonsterCredit(56378);
+            }
+            else
+                playerGUID = 0;
         }
     };
 
-    SpellScript* GetSpellScript() const override
+    CreatureAI* GetAI(Creature* creature) const override
     {
-        return new spell_grab_air_balloon_SpellScript();
+        return new npc_shang_xi_air_balloonAI(creature);
     }
 };
 
@@ -581,7 +638,7 @@ void AddSC_zone_the_wandering_isle()
     new npc_training_target();
     new npc_tushui_monk();
     new spell_rock_jump();
-    new spell_grab_air_balloon();
+    new npc_shang_xi_air_balloon();
     new mob_aisa_pre_balon_event();
     new mop_air_balloon();
 }
