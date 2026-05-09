@@ -27,7 +27,7 @@
 #include "Player.h"
 #include "WorldPacket.h"
 
- // these variables aren't used outside of this file, so declare them only here
+ // these variables arent used outside of this file, so declare them only here
 enum BG_TP_Rewards
 {
     BG_TP_WIN = 0,
@@ -95,12 +95,12 @@ void BattlegroundTP::PostUpdateImpl(uint32 diff)
             }
             else if (GetTeamScore(TEAM_HORDE) == 0)
             {
-                // L'Alliance a plus de points et gagne
+                // Alliance a plus de points et gagne
                 EndBattleground(ALLIANCE);
             }
             else if (GetTeamScore(TEAM_HORDE) == GetTeamScore(TEAM_ALLIANCE))
             {
-                // Les scores sont egaux - equipe qui a capturé le dernier drapeau gagne
+                // Les scores sont egaux - equipe qui a capture le dernier drapeau gagne
                 EndBattleground(_lastFlagCaptureTeam);
             }
             else if (GetTeamScore(TEAM_HORDE) > GetTeamScore(TEAM_ALLIANCE))
@@ -110,7 +110,7 @@ void BattlegroundTP::PostUpdateImpl(uint32 diff)
             }
             else
             {
-                // L'Alliance a plus de points et gagne
+                // Alliance a plus de points et gagne
                 EndBattleground(ALLIANCE);
             }
             return;
@@ -473,7 +473,7 @@ WorldSafeLocsEntry const* BattlegroundTP::GetClosestGraveyard(Player* player)
 
     uint8 team = player->GetTeamId();
 
-    if (GetStatus() != STATUS_IN_PROGRESS) ///< If battle didn't start yet and player is death (unprobably) revive in flagroom
+    if (GetStatus() != STATUS_IN_PROGRESS) ///< If battle didnt start yet and player is death (unprobably) revive in flagroom
         return sWorldSafeLocsStore.LookupEntry(BG_TP_GraveyardIds[TP_GRAVEYARD_FLAGROOM_ALLIANCE + team]);
 
     if (isRated())
