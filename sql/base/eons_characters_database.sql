@@ -1,6 +1,6 @@
 /*
 SQLyog Community v13.3.0 (64 bit)
-MySQL - 8.4.7 : Database - eons_chars_clean
+MySQL - 8.4.7 : Database - eons_chars
 *********************************************************************
 */
 
@@ -12,9 +12,9 @@ MySQL - 8.4.7 : Database - eons_chars_clean
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`eons_chars_clean` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`eons_chars` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
-USE `eons_chars_clean`;
+USE `eons_chars`;
 
 /*Table structure for table `account_data` */
 
