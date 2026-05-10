@@ -205,7 +205,7 @@ void WorldSession::HandleMoveSplineDoneOpcode(WorldPacket& recvData)
     ObjectGuid guid;
     recvData >> guid.ReadAsPacked();
 
-    if (!ValidateAndGetUnitBeingMoved(guid, false))
+    if (!IsRightUnitBeingMoved(guid))
     {
         recvData.rfinish();                     // prevent warnings spam
         return;

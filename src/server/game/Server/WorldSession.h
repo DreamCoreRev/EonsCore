@@ -231,11 +231,6 @@ namespace WorldPackets
         class ResurrectResponse;
     }
 
-    namespace Movement
-    {
-        class ClientPlayerMovement;
-    }
-
     namespace NPC
     {
         class Hello;
@@ -777,11 +772,7 @@ class TC_GAME_API WorldSession
         void HandleMoveWorldportAckOpcode(WorldPacket& recvPacket);
         void HandleMoveWorldportAck();                // for server-side calls
 
-        // Validates that correct unit is moved, coords are in valid range and movement flags
-        bool ValidateMovementInfo(Unit const* mover, MovementInfo* mi) const;
-
-        void HandleMovementOpcodes(WorldPackets::Movement::ClientPlayerMovement& packet);
-        void HandleMovementOpcode(OpcodeClient opcode, MovementInfo& movementInfo);
+        void HandleMovementOpcodes(WorldPacket& recvPacket);
         void HandleSetActiveMoverOpcode(WorldPacket& recvData);
         void HandleMoveNotActiveMover(WorldPacket& recvData);
         void HandleDismissControlledVehicle(WorldPacket& recvData);
@@ -1237,7 +1228,7 @@ class TC_GAME_API WorldSession
         }
 
         // Movement helpers
-        Unit* ValidateAndGetUnitBeingMoved(ObjectGuid guid, bool forStatusAck) const;
+        bool IsRightUnitBeingMoved(ObjectGuid guid);
 
         // this stores the GUIDs of the characters who can login
         // characters who failed on Player::BuildEnumData shouldn't login

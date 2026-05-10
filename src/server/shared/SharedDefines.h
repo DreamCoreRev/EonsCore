@@ -717,10 +717,10 @@ enum SpellAttr7 : uint32
     SPELL_ATTR7_CLIENT_INDICATOR                 = 0x80000000  // TITLE Client indicator (client only)
 };
 
-#define MIN_TALENT_GROUP         0
-#define MAX_TALENT_GROUP         1
-#define MIN_TALENT_GROUPS        1
-#define MAX_TALENT_GROUPS        2
+#define MIN_TALENT_SPEC         0
+#define MAX_TALENT_SPEC         1
+#define MIN_TALENT_SPECS        1
+#define MAX_TALENT_SPECS        2
 #define MAX_GLYPH_SLOT_INDEX    6
 
 // Custom values
@@ -3636,7 +3636,7 @@ enum BattlegroundTypeId : uint32
     BATTLEGROUND_TV             = 109, // 5.x Tol'Vir Arena
     BATTLEGROUND_TTP            = 110, // 5.x The Tiger's Peak
     BATTLEGROUND_BFG            = 120, // Battle For Gilneas
-    BATTLEGROUND_VOP            = 121  // Valley of Power
+    BATTLEGROUND_VOP            = 121  // Valley of Power 
 };
 
 #define MAX_BATTLEGROUND_TYPE_ID 122

@@ -21,6 +21,7 @@
 #include "SharedDefines.h"
 #include "DatabaseEnvFwd.h"
 #include "GameTime.h"
+#include <deque>
 #include <vector>
 #include <unordered_map>
 
@@ -31,11 +32,6 @@ class SpellInfo;
 class Unit;
 class WorldPacket;
 struct SpellCategoryEntry;
-
-namespace WorldPackets::Spells
-{
-class InitialSpells;
-}
 
 /// Spell cooldown flags sent in SMSG_SPELL_COOLDOWN
 enum SpellCooldownFlags
@@ -79,7 +75,6 @@ public:
     bool IsReady(SpellInfo const* spellInfo, uint32 itemId = 0, bool ignoreCategoryCooldown = false) const;
     template<class OwnerType>
     void WritePacket(WorldPacket& packet) const;
-    void WritePacket(WorldPackets::Spells::InitialSpells* initialSpells) const;
 
     // Cooldowns
     static Clock::duration const InfinityCooldownDelay;  // used for set "infinity cooldowns" for spells and check

@@ -789,8 +789,7 @@ namespace LuaCreature
     {
         Unit* victim = E->CHECKOBJ<Unit>(2);
         float threat = E->CHECKVAL<float>(3, true);
-        //schoolMask is unused but other cores support it so we still reserve the number.
-        //float schoolMask = E->CHECKVAL<uint32>(4, 0);
+        float schoolMask = E->CHECKVAL<uint32>(4, 0);
         uint32 spell = E->CHECKVAL<uint32>(5, 0);
 
         creature->GetThreatMgr().AddThreat(victim, threat, spell ? sSpellMgr->GetSpellInfo(spell) : NULL);

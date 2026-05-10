@@ -107,13 +107,15 @@ bool ArenaTeam::AddMember(ObjectGuid playerGuid)
         playerClass = player->GetClass();
         playerName = player->GetName();
     }
-    else if (CharacterCacheEntry const* characterInfo = sCharacterCache->GetCharacterCacheByGuid(playerGuid))
-    {
-        playerName = characterInfo->Name;
-        playerClass = characterInfo->Class;
-    }
     else
-        return false;
+    {
+        CharacterCacheEntry const* cInfo = sCharacterCache->GetCharacterCacheByGuid(playerGuid);
+        if (!cInfo)
+            return false;
+
+        playerName = cInfo->Name;
+        playerClass = cInfo->Class;
+    }
 
     // Check if player is already in a similar arena team
     if ((player && player->GetArenaTeamId(GetSlot())) || sCharacterCache->GetCharacterArenaTeamIdByGuid(playerGuid, GetType()) != 0)

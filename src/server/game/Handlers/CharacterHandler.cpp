@@ -880,7 +880,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder const& holder)
     if (pCurrChar->HasAtLoginFlag(AT_LOGIN_RESET_TALENTS))
     {
         pCurrChar->ResetTalents(true);
-        pCurrChar->SendTalentsInfoData(false); // original talents send already in to SendInitialPacketsBeforeAddToMap, resend reset state
+        pCurrChar->SendTalentsInfoData(false);              // original talents send already in to SendInitialPacketsBeforeAddToMap, resend reset state
     }
 
     bool firstLogin = pCurrChar->HasAtLoginFlag(AT_LOGIN_FIRST);
@@ -1331,7 +1331,7 @@ void WorldSession::HandleRemoveGlyph(WorldPacket& recvData)
         return;
     }
 
-    if (uint32 glyph = _player->GetGlyph(_player->GetActiveTalentGroup(), slot))
+    if (uint32 glyph = _player->GetGlyph(_player->GetActiveSpec(), slot))
     {
         if (GlyphPropertiesEntry const* gp = sGlyphPropertiesStore.LookupEntry(glyph))
         {
@@ -1825,7 +1825,7 @@ void WorldSession::HandleCharRaceOrFactionChangeCallback(std::shared_ptr<WorldPa
                     stmt->setUInt16(1, 113);
                     break;
                 case RACE_PANDAREN_ALLIANCE:
-                    stmt->setUInt16(1, 113);
+                    stmt->setUInt16(1, 906);
                     break;
                 case RACE_UNDEAD_PLAYER:
                     stmt->setUInt16(1, 673);
@@ -1840,7 +1840,7 @@ void WorldSession::HandleCharRaceOrFactionChangeCallback(std::shared_ptr<WorldPa
                     stmt->setUInt16(1, 137);
                     break;
                 case RACE_PANDAREN_HORDE:
-                    stmt->setUInt16(1, 115);
+                    stmt->setUInt16(1, 907);
                     break;
             }
 

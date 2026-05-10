@@ -95,7 +95,7 @@ struct BattlegroundScore
                 case SCORE_HEALING_DONE:    // Healing Done
                     HealingDone += value;
                     break;
-				case SCORE_ORB_CONTROL:    // OrbControl Done
+                case SCORE_ORB_CONTROL:    // OrbControl Done
                     OrbControl += value;
                     break;
                 case SCORE_ORB_SCORE:    // OrbScore Done
@@ -135,7 +135,7 @@ struct BattlegroundScore
         uint32 BonusHonor;
         uint32 DamageDone;
         uint32 HealingDone;
-		uint32 OrbControl;
+        uint32 OrbControl;
         uint32 OrbScore;
 };
 

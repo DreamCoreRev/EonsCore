@@ -219,7 +219,7 @@ public:
                 continue;
 
             player->LearnSpell(spellId, false);
-            player->AddTalent(spellId, player->GetActiveTalentGroup(), true);
+            player->AddTalent(spellId, player->GetActiveSpec(), true);
         }
 
         player->SetFreeTalentPoints(0);

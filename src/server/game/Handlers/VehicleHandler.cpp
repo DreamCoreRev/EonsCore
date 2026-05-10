@@ -19,7 +19,6 @@
 #include "DBCStructure.h"
 #include "Log.h"
 #include "Map.h"
-#include "MovementPackets.h"
 #include "ObjectAccessor.h"
 #include "Player.h"
 #include "Vehicle.h"
@@ -29,23 +28,25 @@ void WorldSession::HandleDismissControlledVehicle(WorldPacket &recvData)
 {
     TC_LOG_DEBUG("network", "WORLD: Recvd CMSG_DISMISS_CONTROLLED_VEHICLE");
 
-    MovementInfo mi;
+    ObjectGuid vehicleGUID = _player->GetCharmedGUID();
 
-    recvData >> mi.guid.ReadAsPacked();
-    recvData >> mi;
-
-    Unit* mover = ValidateAndGetUnitBeingMoved(mi.guid, false);
-    if (!ValidateMovementInfo(mover, &mi))
-        return;
-
-    mi.time = AdjustClientMovementTime(mi.time);
-    mover->m_movementInfo = mi;
-
-    if (Unit* vehicleBase = _player->GetVehicleBase())
+    if (!vehicleGUID)                                       // something wrong here...
     {
-        vehicleBase->SendPetDismissSound();
-        _player->ExitVehicle();
+        recvData.rfinish();                                // prevent warnings spam
+        return;
     }
+
+    ObjectGuid guid;
+
+    recvData >> guid.ReadAsPacked();
+
+    MovementInfo mi;
+    mi.guid = guid;
+    ReadMovementInfo(recvData, &mi);
+
+    _player->m_movementInfo = mi;
+
+    _player->ExitVehicle();
 }
 
 void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recvData)

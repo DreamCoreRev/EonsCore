@@ -37,7 +37,6 @@ EndScriptData */
 #include "Log.h"
 #include "M2Stores.h"
 #include "MapManager.h"
-#include "MovementPackets.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "PoolMgr.h"
@@ -1332,11 +1331,7 @@ public:
             if (target->GetTypeId() != TYPEID_PLAYER)
                 target->DestroyForNearbyPlayers();  // Force new SMSG_UPDATE_OBJECT:CreateObject
             else
-            {
-                WorldPackets::Movement::MoveUpdate moveUpdate;
-                moveUpdate.Status = &target->m_movementInfo;
-                target->SendMessageToSet(moveUpdate.Write(), true);
-            }
+                target->SendMovementFlagUpdate();
 
             handler->PSendSysMessage(LANG_MOVEFLAGS_SET, target->GetUnitMovementFlags(), target->GetExtraUnitMovementFlags());
         }

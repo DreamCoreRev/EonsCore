@@ -67,7 +67,7 @@ enum AreaTeams
     AREATEAM_NONE  = 0,
     AREATEAM_ALLY  = 2,
     AREATEAM_HORDE = 4,
-    AREATEAM_ANY   = AREATEAM_ALLY+AREATEAM_HORDE
+    AREATEAM_ANY   = 6
 };
 
 enum AchievementFaction

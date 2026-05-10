@@ -25,7 +25,6 @@
 #include "GameObject.h"
 #include "GameObjectAI.h"
 #include "Item.h"
-#include "MovementPackets.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "Opcodes.h"
@@ -60,11 +59,8 @@ void WorldSession::HandleClientCastFlags(WorldPacket& recvPacket, uint8 castFlag
         recvPacket >> hasMovementData;
         if (hasMovementData)
         {
-            OpcodeClient opcode = static_cast<OpcodeClient>(recvPacket.read<uint32>());
-            MovementInfo movementInfo;
-            recvPacket >> movementInfo.guid.ReadAsPacked();
-            recvPacket >> movementInfo;
-            HandleMovementOpcode(opcode, movementInfo);
+            recvPacket.SetOpcode(recvPacket.read<uint32>());
+            HandleMovementOpcodes(recvPacket);
         }
     }
 }
@@ -140,9 +136,9 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
     if (pUser->IsInCombat())
     {
-        for (ItemEffect const& effectData : proto->Effects)
+        for (int i = 0; i < MAX_ITEM_PROTO_SPELLS; ++i)
         {
-            if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(effectData.SpellID))
+            if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(proto->Spells[i].SpellId))
             {
                 if (!spellInfo->CanBeUsedInCombat())
                 {
