@@ -4256,3 +4256,85 @@ Metric.OverallStatusInterval = 1
 
 #
 ###################################################################################################
+
+###################################################################################################
+# SOLO LFG
+#
+#    SoloLFG.Enable
+#        Description: Enable the module.
+#        Default:     1  - (Enabled)
+#                     0  - (Disabled)
+
+SoloLFG.Enable = 1
+
+#    SoloLFG.Announce
+#        Description: Announce the module.
+#        Default:     1  - (Enabled)
+#                     0  - (Disabled)
+
+SoloLFG.Announce = 0
+
+#
+###################################################################################################
+
+##################################################################################################################
+#   Premium.NpcDuration
+#       Description: Time (in seconds) before despawn of summoned NPC
+#       Default:    60 - (Seconds)
+
+Premium.NpcDuration = 60
+PremiumAccount = 1
+Morph = 1
+Mount = 1
+Trainers = 1
+PlayerInteraction = 1
+Vendor = 1
+MailBox = 1
+Bank = 1
+Auction = 1
+RepairAll = 1
+RemoveResSickness = 1
+ResetCooldowns = 1
+
+##################################################################################################################
+
+###################################################################################################
+#
+# START GUILD
+#
+# These settings set all new characters into a starting guild based on faction.
+#
+#    StartGuild.Alliance
+#        Description: Guild entry number for Alliance(Taken from guildid field in characters.guild table)
+#        Default: 45 (Default guildid)
+#                 1+ (guildid entry)
+#
+
+StartGuild.Alliance = 1
+
+#
+#    StartGuild.Horde
+#        Description: Guild entry number for Horde (Taken from guildid field in characters.guild table)
+#        Default: 46 (Default guildid)
+#                 1+ (guildid entry)
+
+#
+
+StartGuild.Horde = 1
+
+#
+###################################################################################################
+
+###################################################################################################
+#
+#    Double XP Weekend
+#        Description: Enables or disables the Double XP Weekend Script
+#
+#    DoubleXP.Enable
+#        Default:     1 (enabled)
+#                     0 (disabled)
+
+DoubleXP.Enable = 1
+
+#
+###################################################################################################

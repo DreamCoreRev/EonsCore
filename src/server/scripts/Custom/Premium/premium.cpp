@@ -86,6 +86,9 @@ enum Mounts
 // Cooldown duration (in seconds) before a player can reset spell cooldowns again
 static const uint32 COOLDOWN_RESET_DELAY = 60;
 
+// Spell ID du "Mal de la résurrection"
+static const uint32 SPELL_RESURRECTION_SICKNESS = 15007;
+
 class premium_account : public ItemScript
 {
 public:
@@ -149,6 +152,12 @@ public:
 
         if (sConfigMgr->GetBoolDefault("RepairAll", true))
             AddGossipItemFor(player, GOSSIP_ICON_BATTLE, "Reparer l'equipement", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 10);
+
+        if (sConfigMgr->GetBoolDefault("RemoveResSickness", true))
+        {
+            if (player->HasAura(SPELL_RESURRECTION_SICKNESS))
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Retirer le Mal de la resurrection", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 12);
+        }
 
         if (sConfigMgr->GetBoolDefault("ResetCooldowns", true))
         {
@@ -346,6 +355,20 @@ public:
                 player->GetSpellHistory()->ResetAllCooldowns();
                 _cooldownResetTracker[player->GetGUID().GetRawValue()] = time(nullptr);
                 ChatHandler(player->GetSession()).PSendSysMessage("Tous vos cooldowns ont ete reinitialises.");
+                CloseGossipMenuFor(player);
+                break;
+            }
+            case GOSSIP_ACTION_INFO_DEF + 12: /*Remove Resurrection Sickness*/
+            {
+                if (player->HasAura(SPELL_RESURRECTION_SICKNESS))
+                {
+                    player->RemoveAurasDueToSpell(SPELL_RESURRECTION_SICKNESS);
+                    ChatHandler(player->GetSession()).PSendSysMessage("Le Mal de la resurrection a ete retire.");
+                }
+                else
+                {
+                    ChatHandler(player->GetSession()).PSendSysMessage("Vous n'etes pas affecte par le Mal de la resurrection.");
+                }
                 CloseGossipMenuFor(player);
                 break;
             }
