@@ -843,10 +843,12 @@ enum Language
     LANG_ZOMBIE            = 36,
     LANG_GNOMISH_BINARY    = 37,
     LANG_GOBLIN_BINARY     = 38,
+    LANG_PANDAREN_ALLIANCE = 43,
+    LANG_PANDAREN_HORDE    = 44,
     LANG_ADDON             = 0xFFFFFFFF // used by addons, in 2.4.0 not exist, replaced by messagetype?
 };
 
-#define LANGUAGES_COUNT   19
+#define LANGUAGES_COUNT   21
 
 enum TeamId
 {
@@ -3148,10 +3150,13 @@ enum SkillType
     SKILL_MISTWEAVER                                = 793,
     SKILL_WINDWALKING                               = 794,
     SKILL_MONK                                      = 806,
-    SKILL_PET_XUEN                                  = 810
+    SKILL_PET_XUEN                                  = 810,
+    SKILL_RACIAL_PANDAREN                           = 899,
+    SKILL_LANG_PANDAREN_ALLIANCE                    = 906,
+    SKILL_LANG_PANDAREN_HORDE                       = 907
 };
 
-#define MAX_SKILL_TYPE                                811
+#define MAX_SKILL_TYPE                                908
 
 constexpr SkillType SkillByLockType(LockType locktype)
 {
