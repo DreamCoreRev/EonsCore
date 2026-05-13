@@ -21,6 +21,8 @@ env:
 jobs:
   build:
     runs-on: windows-2022
+    permissions:
+      contents: write   # nécessaire pour créer des GitHub Releases
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
