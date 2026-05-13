@@ -262,3 +262,26 @@ jobs:
           name: EonsCore-Win64-${{ env.CI_SHA_SHORT }}
           path: ${{ env.BUILD_DIR }}/bin/${{ env.BUILD_TYPE }}/
           retention-days: 7
+
+      # ── 12b. Zipper les binaires ──────────────────────────────────────────────
+      - name: Create ZIP archive
+        shell: powershell
+        run: |
+          $binDir  = "${{ env.BUILD_DIR }}\bin\${{ env.BUILD_TYPE }}"
+          $zipName = "EonsCore-Win64-$env:CI_SHA_SHORT.zip"
+          $zipPath = "${{ env.BUILD_DIR }}\$zipName"
+          Write-Host "Creating archive $zipName..."
+          Compress-Archive -Path "$binDir\*" -DestinationPath $zipPath -Force
+          echo "RELEASE_ZIP=$zipPath" >> $env:GITHUB_ENV
+          Write-Host "Archive created: $zipPath"
+
+      # ── 13. Publier dans GitHub Releases ──────────────────────────────────────
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ env.CI_SHA_SHORT }}
+          name: "Development Build (${{ env.CI_SHA_SHORT }})"
+          prerelease: true
+          files: ${{ env.RELEASE_ZIP }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
