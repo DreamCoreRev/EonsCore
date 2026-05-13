@@ -1,0 +1,146 @@
+name: Windows Build Release
+
+on:
+  push:
+    paths-ignore:
+      - 'sql/**'
+  pull_request:
+    paths-ignore:
+      - 'sql/**'
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+env:
+  BUILD_TYPE: RelWithDebInfo
+  REPO_DIR: ${{ github.workspace }}
+  BUILD_DIR: ${{ github.workspace }}/bin/builddir
+  BOOST_TOOLSET: "msvc"
+  BOOST_VERSION: "1.78.0"
+  CMAKE_VERSION: "3.27.8"
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: FranzDiebold/github-env-vars-action@v2.8.0
+
+      - name: Create Build Environment
+        run: |
+          echo "ARCHIVE_FILENAME=$env:CI_REPOSITORY_NAME-$env:CI_SHA_SHORT.zip" >> $env:GITHUB_ENV
+          cmake -E make_directory ${{ env.BUILD_DIR }}
+        shell: powershell
+
+      - name: Install CMake ${{ env.CMAKE_VERSION }}
+        run: |
+          choco install cmake --version=${{ env.CMAKE_VERSION }} `
+            --installargs 'ADD_CMAKE_TO_PATH=System' -y
+          refreshenv
+        shell: powershell
+
+      - name: Install Boost
+        uses: MarkusJx/install-boost@v2.5.1
+        id: install-boost
+        with:
+          boost_version: ${{ env.BOOST_VERSION }}
+          platform_version: 2022
+          toolset: ${{ env.BOOST_TOOLSET }}
+
+      - name: Install MySQL 8.4.7
+        run: |
+          $url  = "https://github.com/DreamCoreRev/EonsCore/releases/download/mysql-8.4.7/mysql-8.4.7-winx64.msi"
+          $dest = "$env:TEMP\mysql-8.4.7-winx64.msi"
+          Write-Host "Downloading MySQL 8.4.7..."
+          Invoke-WebRequest -Uri $url -OutFile $dest
+          Write-Host "Installing MySQL 8.4.7..."
+          Start-Process msiexec.exe -ArgumentList `
+            "/i `"$dest`" /quiet /norestart INSTALLLOCATION=`"C:\MySQL`" ADDLOCAL=ALL" `
+            -Wait -NoNewWindow
+          echo "C:\MySQL\bin" >> $env:GITHUB_PATH
+          echo "MYSQL_ROOT=C:\MySQL" >> $env:GITHUB_ENV
+          Write-Host "MySQL 8.4.7 installed at C:\MySQL"
+        shell: powershell
+
+      - name: Install OpenSSL 3.1.3
+        run: |
+          $url  = "https://github.com/DreamCoreRev/EonsCore/releases/download/Win64OpenSSL-3_1_3/Win64OpenSSL-3_1_3.msi"
+          $dest = "$env:TEMP\Win64OpenSSL-3_1_3.msi"
+          Write-Host "Downloading OpenSSL 3.1.3..."
+          Invoke-WebRequest -Uri $url -OutFile $dest
+          Write-Host "Installing OpenSSL 3.1.3..."
+          Start-Process msiexec.exe -ArgumentList `
+            "/i `"$dest`" /quiet /norestart INSTALLDIR=`"C:\OpenSSL-Win64`"" `
+            -Wait -NoNewWindow
+          echo "OPENSSL_ROOT=C:\OpenSSL-Win64" >> $env:GITHUB_ENV
+          Write-Host "OpenSSL 3.1.3 installed at C:\OpenSSL-Win64"
+        shell: powershell
+
+      - name: Configure with CMake
+        env:
+          BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+        run: |
+          cd "${{ env.BUILD_DIR }}"
+          cmake "${{ env.REPO_DIR }}" `
+            -A x64 `
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} `
+            -DTOOLS=ON `
+            -DSCRIPTS=static `
+            -DSERVERS=1 `
+            -DUSE_COREPCH=1 `
+            -DUSE_SCRIPTPCH=1 `
+            -DNOJEM=0 `
+            -DWITH_WARNINGS=0 `
+            -DWITH_COREDEBUG=0 `
+            -DMYSQL_INCLUDE_DIR="C:/MySQL/include" `
+            -DMYSQL_LIBRARY="C:/MySQL/lib/libmysql.lib" `
+            -DOPENSSL_ROOT_DIR="C:/OpenSSL-Win64" `
+            -DOPENSSL_INCLUDE_DIR="C:/OpenSSL-Win64/include" `
+            -DBOOST_ROOT="${{ steps.install-boost.outputs.BOOST_ROOT }}" `
+            -DCMAKE_INSTALL_PREFIX="${{ env.BUILD_DIR }}/install"
+        shell: powershell
+
+      - name: Build
+        run: |
+          cmake --build "${{ env.BUILD_DIR }}" `
+            --config ${{ env.BUILD_TYPE }} `
+            --parallel 4
+        shell: powershell
+
+      - name: Copy runtime DLLs
+        run: |
+          $binDir = "${{ env.BUILD_DIR }}/bin/${{ env.BUILD_TYPE }}"
+
+          Write-Host "Copying MySQL DLL..."
+          Copy-Item "C:/MySQL/lib/libmysql.dll" "$binDir/libmysql.dll" -Force
+
+          Write-Host "Copying OpenSSL DLLs..."
+          Copy-Item "C:/OpenSSL-Win64/bin/libcrypto-3-x64.dll" "$binDir/libcrypto-3-x64.dll" -Force
+          Copy-Item "C:/OpenSSL-Win64/bin/libssl-3-x64.dll"    "$binDir/libssl-3-x64.dll"    -Force
+
+          Write-Host "All DLLs copied successfully."
+        shell: powershell
+
+      - name: Check binaries
+        run: |
+          $binDir = "${{ env.BUILD_DIR }}/bin/${{ env.BUILD_TYPE }}"
+          Write-Host "=== Binaries in $binDir ==="
+          Get-ChildItem $binDir
+          Write-Host "=== authserver version ==="
+          & "$binDir/authserver.exe"  --version
+          Write-Host "=== worldserver version ==="
+          & "$binDir/worldserver.exe" --version
+        shell: powershell
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: EonsCore-Win64-${{ env.CI_SHA_SHORT }}
+          path: ${{ env.BUILD_DIR }}/bin/${{ env.BUILD_TYPE }}/
+          retention-days: 7
