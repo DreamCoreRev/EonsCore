@@ -18,13 +18,16 @@ env:
   BUILD_DIR: ${{ github.workspace }}/bin/builddir
   BOOST_TOOLSET: "msvc"
   BOOST_VERSION: "1.78.0"
-  CMAKE_VERSION: "3.27.8"
 
 jobs:
   build:
     runs-on: windows-2022
 
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -35,14 +38,27 @@ jobs:
       - name: Create Build Environment
         run: |
           echo "ARCHIVE_FILENAME=$env:CI_REPOSITORY_NAME-$env:CI_SHA_SHORT.zip" >> $env:GITHUB_ENV
-          cmake -E make_directory ${{ env.BUILD_DIR }}
+          cmake -E make_directory "${{ env.BUILD_DIR }}"
         shell: powershell
 
-      - name: Install CMake ${{ env.CMAKE_VERSION }}
+      - name: Install CMake 3.27.8
         run: |
-          choco install cmake --version=${{ env.CMAKE_VERSION }} `
-            --installargs 'ADD_CMAKE_TO_PATH=System' -y
-          refreshenv
+          $url  = "https://github.com/DreamCoreRev/EonsCore/releases/download/cmake-3.27.8/cmake-3.27.8-windows-x86_64.msi"
+          $dest = "$env:TEMP\cmake-3.27.8-windows-x86_64.msi"
+          Write-Host "Downloading CMake 3.27.8..."
+          Invoke-WebRequest -Uri $url -OutFile $dest
+          Write-Host "Installing CMake 3.27.8..."
+          Start-Process msiexec.exe -ArgumentList `
+            "/i `"$dest`" /quiet /norestart ADD_CMAKE_TO_PATH=System" `
+            -Wait -NoNewWindow
+          # Rafraîchir le PATH pour le reste du job
+          $cmakePath = "C:\Program Files\CMake\bin"
+          echo "$cmakePath" >> $env:GITHUB_PATH
+          Write-Host "CMake 3.27.8 installed."
+        shell: powershell
+
+      - name: Verify CMake version
+        run: cmake --version
         shell: powershell
 
       - name: Install Boost
@@ -63,7 +79,7 @@ jobs:
           Start-Process msiexec.exe -ArgumentList `
             "/i `"$dest`" /quiet /norestart INSTALLLOCATION=`"C:\MySQL`" ADDLOCAL=ALL" `
             -Wait -NoNewWindow
-          echo "C:\MySQL\bin" >> $env:GITHUB_PATH
+          echo "C:\MySQL\bin"        >> $env:GITHUB_PATH
           echo "MYSQL_ROOT=C:\MySQL" >> $env:GITHUB_ENV
           Write-Host "MySQL 8.4.7 installed at C:\MySQL"
         shell: powershell
@@ -118,7 +134,7 @@ jobs:
           $binDir = "${{ env.BUILD_DIR }}/bin/${{ env.BUILD_TYPE }}"
 
           Write-Host "Copying MySQL DLL..."
-          Copy-Item "C:/MySQL/lib/libmysql.dll" "$binDir/libmysql.dll" -Force
+          Copy-Item "C:/MySQL/lib/libmysql.dll"                "$binDir/libmysql.dll"        -Force
 
           Write-Host "Copying OpenSSL DLLs..."
           Copy-Item "C:/OpenSSL-Win64/bin/libcrypto-3-x64.dll" "$binDir/libcrypto-3-x64.dll" -Force
