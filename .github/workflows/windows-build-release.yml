@@ -194,18 +194,57 @@ jobs:
       - name: Copy runtime DLLs
         shell: powershell
         run: |
-          $binDir     = "${{ env.BUILD_DIR }}/bin/${{ env.BUILD_TYPE }}"
-          $mysqlBin   = "$env:MYSQL_ROOT\lib"
-          $opensslBin = "$env:OPENSSL_ROOT\bin"
+          $binDir = "${{ env.BUILD_DIR }}\bin\${{ env.BUILD_TYPE }}"
 
-          Write-Host "Copying MySQL DLL from $mysqlBin..."
-          Copy-Item "$mysqlBin\libmysql.dll" "$binDir\libmysql.dll" -Force
+          # ── MySQL DLL ──────────────────────────────────────────────────────
+          $mysqlLib = "$env:MYSQL_ROOT\lib\libmysql.dll"
+          Write-Host "Copying MySQL DLL from $mysqlLib..."
+          Copy-Item $mysqlLib "$binDir\libmysql.dll" -Force
 
-          Write-Host "Copying OpenSSL DLLs from $opensslBin..."
-          Copy-Item "$opensslBin\libcrypto-3-x64.dll" "$binDir\libcrypto-3-x64.dll" -Force
-          Copy-Item "$opensslBin\libssl-3-x64.dll"    "$binDir\libssl-3-x64.dll"    -Force
+          # ── OpenSSL DLLs ───────────────────────────────────────────────────
+          # Chercher libcrypto et libssl directement dans tous les dossiers
+          # OpenSSL possibles (le registre peut avoir un chemin avec espace parasite)
+          $opensslSearchPaths = @(
+            "$env:OPENSSL_ROOT\bin",
+            "C:\Program Files\OpenSSL-Win64\bin",
+            "C:\Program Files\OpenSSL\bin",
+            "C:\OpenSSL-Win64\bin",
+            "C:\OpenSSL\bin"
+          )
 
-          Write-Host "All DLLs copied."
+          $cryptoDll = $null
+          $sslDll    = $null
+          foreach ($path in $opensslSearchPaths) {
+            $path = $path.Trim()
+            Write-Host "Checking OpenSSL path: '$path'"
+            if (Test-Path "$path\libcrypto-3-x64.dll") {
+              $cryptoDll = "$path\libcrypto-3-x64.dll"
+              $sslDll    = "$path\libssl-3-x64.dll"
+              Write-Host "Found OpenSSL DLLs at: $path"
+              break
+            }
+          }
+
+          # Fallback : scan global si aucun chemin statique ne fonctionne
+          if (-not $cryptoDll) {
+            Write-Host "Static paths failed, scanning C:\Program Files for OpenSSL DLLs..."
+            $found = Get-ChildItem "C:\Program Files" -Recurse -Filter "libcrypto-3-x64.dll" -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($found) {
+              $cryptoDll = $found.FullName
+              $sslDll    = Join-Path $found.DirectoryName "libssl-3-x64.dll"
+              Write-Host "Found via scan: $cryptoDll"
+            }
+          }
+
+          if (-not $cryptoDll) {
+            Write-Error "Could not find libcrypto-3-x64.dll anywhere!"
+            exit 1
+          }
+
+          Copy-Item $cryptoDll "$binDir\libcrypto-3-x64.dll" -Force
+          Copy-Item $sslDll    "$binDir\libssl-3-x64.dll"    -Force
+
+          Write-Host "All DLLs copied successfully."
 
       # ── 11. Vérifier les binaires ─────────────────────────────────────────────
       - name: Check binaries
