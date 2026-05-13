@@ -9,7 +9,7 @@ on:
       - 'sql/**'
 
 concurrency:
-  group: ${{ github.head_ref }} || concat(${{ github.ref }}, ${{ github.workflow }})
+  group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
 env:
@@ -41,88 +41,182 @@ jobs:
           echo "ARCHIVE_FILENAME=$env:CI_REPOSITORY_NAME-$env:CI_SHA_SHORT.zip" >> $env:GITHUB_ENV
           cmake -E make_directory "${{ env.BUILD_DIR }}"
 
-      # ── 3. Installer les dépendances via Chocolatey ───────────────────────────
-      # On utilise choco comme dans le fichier windows-build.yml de référence.
-      # - openssl  → installe dans C:\Program Files\OpenSSL-Win64, écrit le registre
-      # - mysql    → installe dans C:\mysql (libmysql.dll, includes, libs)
-      # On ne force PAS de version de cmake : l'image windows-2022 a déjà cmake 3.x
-      # et TrinityCore 3.3.5 est compatible avec les versions récentes de CMake.
-      - name: Install dependencies (choco)
-        shell: bash
+      # ── 3. Installer CMake 3.27.8 ────────────────────────────────────────────
+      - name: Install CMake 3.27.8
+        shell: powershell
         run: |
-          choco install -y openssl
-          choco install -y mysql
+          $url  = "https://github.com/DreamCoreRev/EonsCore/releases/download/cmake-3.27.8/cmake-3.27.8-windows-x86_64.msi"
+          $dest = "$env:TEMP\cmake-3.27.8-windows-x86_64.msi"
+          Write-Host "Downloading CMake 3.27.8..."
+          Invoke-WebRequest -Uri $url -OutFile $dest
+          Write-Host "Installing CMake 3.27.8..."
+          Start-Process msiexec.exe -ArgumentList "/i `"$dest`" /quiet /norestart ADD_CMAKE_TO_PATH=System" -Wait -NoNewWindow
+          $cmakeBin = "C:\Program Files\CMake\bin"
+          echo "$cmakeBin" >> $env:GITHUB_PATH
+          Write-Host "CMake 3.27.8 installed."
+
+      - name: Verify CMake version
+        shell: powershell
+        run: cmake --version
 
       # ── 4. Installer Boost 1.78.0 ────────────────────────────────────────────
-      - name: Install Boost
-        uses: MarkusJx/install-boost@v2.5.1
-        id: install-boost
-        with:
-          boost_version: ${{ env.BOOST_VERSION }}
-          platform_version: 2022
-          toolset: ${{ env.BOOST_TOOLSET }}
-
-      # ── 5. Configure (CMake) ─────────────────────────────────────────────────
-      # OpenSSL installé par choco dans "C:/Program Files/OpenSSL-Win64"
-      # MySQL installé par choco dans "C:/mysql"
-      - name: Configure with CMake
-        shell: bash
-        env:
-          BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+      # IMPORTANT: on n'utilise PAS MarkusJx/install-boost car il télécharge
+      # depuis un CDN tiers. On installe depuis notre propre release avec l'exe
+      # officiel Boost pour MSVC 14.3 (VS2022).
+      - name: Install Boost 1.78.0
+        shell: powershell
         run: |
+          $url  = "https://github.com/DreamCoreRev/EonsCore/releases/download/boost_1_78_0/boost_1_78_0-msvc-14.3-64.exe"
+          $dest = "$env:TEMP\boost_1_78_0-msvc-14.3-64.exe"
+          Write-Host "Downloading Boost 1.78.0..."
+          Invoke-WebRequest -Uri $url -OutFile $dest
+          Write-Host "Installing Boost 1.78.0..."
+          # Installation silencieuse dans C:\Boost
+          Start-Process $dest -ArgumentList "/SILENT", "/SP-", "/DIR=C:\Boost" -Wait -NoNewWindow
+          echo "BOOST_ROOT=C:\Boost" >> $env:GITHUB_ENV
+          Write-Host "Boost 1.78.0 installed at C:\Boost"
+
+      # ── 5. Installer MySQL 8.4.7 ─────────────────────────────────────────────
+      - name: Install MySQL 8.4.7
+        shell: powershell
+        run: |
+          $url  = "https://github.com/DreamCoreRev/EonsCore/releases/download/mysql-8.4.7/mysql-8.4.7-winx64.msi"
+          $dest = "$env:TEMP\mysql-8.4.7-winx64.msi"
+          Write-Host "Downloading MySQL 8.4.7..."
+          Invoke-WebRequest -Uri $url -OutFile $dest
+          Write-Host "Installing MySQL 8.4.7..."
+          # Laisser MySQL s'installer dans son chemin par défaut (Program Files)
+          # pour que les clés de registre soient écrites correctement.
+          # FindMySQL.cmake lit le registre HKLM\SOFTWARE\MySQL AB pour trouver
+          # l'emplacement — ne pas forcer INSTALLLOCATION ici.
+          Start-Process msiexec.exe -ArgumentList "/i `"$dest`" /quiet /norestart ADDLOCAL=ALL" -Wait -NoNewWindow
+
+          # Détecter le chemin réel via le registre (ex: C:\Program Files\MySQL\MySQL Server 8.4)
+          $regBase = "HKLM:\SOFTWARE\MySQL AB"
+          $mysqlRoot = $null
+          try {
+            $subkeys = Get-ChildItem $regBase -ErrorAction Stop | Where-Object { $_.PSChildName -like "MySQL Server *" }
+            if ($subkeys) {
+              $mysqlRoot = ($subkeys | Sort-Object PSChildName -Descending | Select-Object -First 1 | Get-ItemProperty).Location
+            }
+          } catch {}
+
+          if (-not $mysqlRoot) {
+            # Fallback : chemin par défaut MySQL 8.4
+            $mysqlRoot = "C:\Program Files\MySQL\MySQL Server 8.4"
+          }
+
+          Write-Host "MySQL root detected: $mysqlRoot"
+          echo "MYSQL_ROOT=$mysqlRoot" >> $env:GITHUB_ENV
+          echo "$mysqlRoot\bin" >> $env:GITHUB_PATH
+          Write-Host "MySQL 8.4.7 ready."
+
+      # ── 6. Installer OpenSSL 3.1.3 ───────────────────────────────────────────
+      - name: Install OpenSSL 3.1.3
+        shell: powershell
+        run: |
+          $url  = "https://github.com/DreamCoreRev/EonsCore/releases/download/Win64OpenSSL-3_1_3/Win64OpenSSL-3_1_3.msi"
+          $dest = "$env:TEMP\Win64OpenSSL-3_1_3.msi"
+          Write-Host "Downloading OpenSSL 3.1.3..."
+          Invoke-WebRequest -Uri $url -OutFile $dest
+          Write-Host "Installing OpenSSL 3.1.3..."
+          Start-Process msiexec.exe -ArgumentList "/i `"$dest`" /quiet /norestart" -Wait -NoNewWindow
+          Write-Host "OpenSSL 3.1.3 installed."
+
+          # Détecter le chemin réel via le registre
+          $regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+          $installed = Get-ChildItem $regPath | Get-ItemProperty | Where-Object { $_.DisplayName -like "*OpenSSL*" }
+          if ($installed) {
+            $opensslRoot = $installed.InstallLocation.TrimEnd('\')
+            Write-Host "OpenSSL found in registry: $opensslRoot"
+          } else {
+            $opensslRoot = "C:\Program Files\OpenSSL-Win64"
+          }
+          echo "OPENSSL_ROOT=$opensslRoot" >> $env:GITHUB_ENV
+          Write-Host "OpenSSL root: $opensslRoot"
+
+      # ── 7. Vérifier les dépendances ──────────────────────────────────────────
+      - name: Verify dependencies
+        shell: powershell
+        run: |
+          Write-Host "=== Boost ==="
+          Write-Host "BOOST_ROOT: $env:BOOST_ROOT"
+          Test-Path "$env:BOOST_ROOT\include" | Write-Host
+
+          Write-Host "=== MySQL ==="
+          Write-Host "MYSQL_ROOT: $env:MYSQL_ROOT"
+          Test-Path "$env:MYSQL_ROOT\include\mysql.h" | Write-Host
+          Test-Path "$env:MYSQL_ROOT\lib\libmysql.lib" | Write-Host
+
+          Write-Host "=== OpenSSL ==="
+          Write-Host "OPENSSL_ROOT: $env:OPENSSL_ROOT"
+          Test-Path "$env:OPENSSL_ROOT\include\openssl\ssl.h" | Write-Host
+          Test-Path "$env:OPENSSL_ROOT\lib\VC\x64\MD\libcrypto.lib" | Write-Host
+
+      # ── 8. Configure (CMake) ─────────────────────────────────────────────────
+      - name: Configure with CMake
+        shell: powershell
+        run: |
+          $mysqlRoot   = $env:MYSQL_ROOT
+          $opensslRoot = $env:OPENSSL_ROOT
+          $boostRoot   = $env:BOOST_ROOT
+
+          Write-Host "MySQL root   : $mysqlRoot"
+          Write-Host "OpenSSL root : $opensslRoot"
+          Write-Host "Boost root   : $boostRoot"
+
           cd "${{ env.BUILD_DIR }}"
-          cmake "${{ env.REPO_DIR }}" \
-            -A x64 \
-            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
-            -DTOOLS=ON \
-            -DSCRIPTS=dynamic \
-            -DSERVERS=1 \
-            -DUSE_COREPCH=1 \
-            -DUSE_SCRIPTPCH=1 \
-            -DNOJEM=0 \
-            -DWITH_WARNINGS=0 \
-            -DWITH_COREDEBUG=0 \
-            -DMYSQL_INCLUDE_DIR="C:/mysql/include" \
-            -DMYSQL_LIBRARY="C:/mysql/lib/libmysql.lib" \
-            -DOPENSSL_ROOT_DIR="C:/Program Files/OpenSSL-Win64" \
-            -DBOOST_ROOT="${{ steps.install-boost.outputs.BOOST_ROOT }}" \
+          cmake "${{ env.REPO_DIR }}" `
+            -A x64 `
+            -DCMAKE_BUILD_TYPE="${{ env.BUILD_TYPE }}" `
+            -DTOOLS=ON `
+            -DSCRIPTS=dynamic `
+            -DSERVERS=1 `
+            -DUSE_COREPCH=1 `
+            -DUSE_SCRIPTPCH=1 `
+            -DNOJEM=0 `
+            -DWITH_WARNINGS=0 `
+            -DWITH_COREDEBUG=0 `
+            -DMYSQL_ROOT_DIR="$mysqlRoot" `
+            -DOPENSSL_ROOT_DIR="$opensslRoot" `
+            -DBOOST_ROOT="$boostRoot" `
             -DCMAKE_INSTALL_PREFIX="${{ env.BUILD_DIR }}/install"
 
-      # ── 6. Build ─────────────────────────────────────────────────────────────
+      # ── 9. Build ─────────────────────────────────────────────────────────────
       - name: Build
-        shell: bash
+        shell: powershell
         run: |
-          cmake --build "${{ env.BUILD_DIR }}" \
-            --config ${{ env.BUILD_TYPE }} \
+          cmake --build "${{ env.BUILD_DIR }}" `
+            --config ${{ env.BUILD_TYPE }} `
             --parallel 4
 
-      # ── 7. Copier les DLL runtime et créer l'archive ──────────────────────────
-      - name: Archive binaries
-        shell: bash
+      # ── 10. Copier les DLL runtime ────────────────────────────────────────────
+      - name: Copy runtime DLLs
+        shell: powershell
         run: |
-          BIN_DIR="${{ env.BUILD_DIR }}/bin/${{ env.BUILD_TYPE }}"
+          $binDir     = "${{ env.BUILD_DIR }}/bin/${{ env.BUILD_TYPE }}"
+          $mysqlBin   = "$env:MYSQL_ROOT\lib"
+          $opensslBin = "$env:OPENSSL_ROOT\bin"
 
-          # MySQL
-          cp "c:/mysql/lib/libmysql.dll" "$BIN_DIR/libmysql.dll"
+          Write-Host "Copying MySQL DLL from $mysqlBin..."
+          Copy-Item "$mysqlBin\libmysql.dll" "$binDir\libmysql.dll" -Force
 
-          # OpenSSL 3.x (choco installe OpenSSL 3, noms de DLL avec -3-)
-          cp "c:/Program Files/OpenSSL-Win64/bin/libssl-3-x64.dll"    "$BIN_DIR/libssl-3-x64.dll"    || \
-          cp "c:/Program Files/OpenSSL-Win64/bin/libssl-1_1-x64.dll"  "$BIN_DIR/libssl-1_1-x64.dll"  || true
-          cp "c:/Program Files/OpenSSL-Win64/bin/libcrypto-3-x64.dll" "$BIN_DIR/libcrypto-3-x64.dll" || \
-          cp "c:/Program Files/OpenSSL-Win64/bin/libcrypto-1_1-x64.dll" "$BIN_DIR/libcrypto-1_1-x64.dll" || true
+          Write-Host "Copying OpenSSL DLLs from $opensslBin..."
+          Copy-Item "$opensslBin\libcrypto-3-x64.dll" "$binDir\libcrypto-3-x64.dll" -Force
+          Copy-Item "$opensslBin\libssl-3-x64.dll"    "$binDir\libssl-3-x64.dll"    -Force
 
-          echo "=== Binaries ==="
-          ls -la "$BIN_DIR"
+          Write-Host "All DLLs copied."
 
-      # ── 8. Vérifier les exécutables ───────────────────────────────────────────
-      - name: Check executables
-        shell: bash
+      # ── 11. Vérifier les binaires ─────────────────────────────────────────────
+      - name: Check binaries
+        shell: powershell
         run: |
-          BIN_DIR="${{ env.BUILD_DIR }}/bin/${{ env.BUILD_TYPE }}"
-          "$BIN_DIR/authserver.exe"  --version
-          "$BIN_DIR/worldserver.exe" --version
+          $binDir = "${{ env.BUILD_DIR }}/bin/${{ env.BUILD_TYPE }}"
+          Get-ChildItem $binDir
+          & "$binDir/authserver.exe"  --version
+          & "$binDir/worldserver.exe" --version
 
-      # ── 9. Upload artifact ────────────────────────────────────────────────────
+      # ── 12. Upload artifact ───────────────────────────────────────────────────
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
