@@ -102,19 +102,20 @@ jobs:
         shell: powershell
 
       # ── 8. Diagnostiquer l'arborescence OpenSSL (debug) ──────────────────────
-      # Ce step liste les fichiers installés pour confirmer les bons chemins.
-      # Tu peux le retirer une fois le build stable.
       - name: Debug OpenSSL layout
-        run: |
-          Write-Host "=== C:\OpenSSL-Win64 ==="
-          if (Test-Path "C:\OpenSSL-Win64") {
-            Get-ChildItem "C:\OpenSSL-Win64" -Recurse -Filter "*.lib" | Select-Object FullName
-            Get-ChildItem "C:\OpenSSL-Win64" -Recurse -Filter "*.dll" | Select-Object FullName
-          } else {
-            Write-Host "OpenSSL folder NOT found at C:\OpenSSL-Win64 — checking alternatives..."
-            Get-ChildItem "C:\" -Directory | Select-Object Name
-          }
         shell: powershell
+        run: |
+          $opensslPath = "C:\OpenSSL-Win64"
+          if (Test-Path $opensslPath) {
+            Write-Host "=== .lib files ==="
+            Get-ChildItem $opensslPath -Recurse -Filter "*.lib" | ForEach-Object { Write-Host $_.FullName }
+            Write-Host "=== .dll files ==="
+            Get-ChildItem $opensslPath -Recurse -Filter "*.dll" | ForEach-Object { Write-Host $_.FullName }
+          } else {
+            Write-Host "OpenSSL NOT found at $opensslPath"
+            Write-Host "=== C:\ directories ==="
+            Get-ChildItem "C:\" -Directory | ForEach-Object { Write-Host $_.Name }
+          }
 
       # ── 9. Configure (CMake) ─────────────────────────────────────────────────
       # Correction principale : on passe OPENSSL_SSL_LIBRARY et
@@ -129,7 +130,7 @@ jobs:
             -A x64 `
             -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} `
             -DTOOLS=ON `
-            -DSCRIPTS=static `
+            -DSCRIPTS=dynamic `
             -DSERVERS=1 `
             -DUSE_COREPCH=1 `
             -DUSE_SCRIPTPCH=1 `
