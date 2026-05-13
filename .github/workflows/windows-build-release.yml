@@ -36,32 +36,33 @@ jobs:
 
       # ── 2. Créer le dossier de build ─────────────────────────────────────────
       - name: Create Build Environment
+        shell: powershell
         run: |
           echo "ARCHIVE_FILENAME=$env:CI_REPOSITORY_NAME-$env:CI_SHA_SHORT.zip" >> $env:GITHUB_ENV
           cmake -E make_directory "${{ env.BUILD_DIR }}"
-        shell: powershell
 
       # ── 3. Installer CMake 3.27.8 via MSI custom ─────────────────────────────
+      # L'image windows-2022 a déjà CMake 3.31+ donc on ne peut pas downgrader
+      # via choco. On installe depuis la release GitHub et on prepend au PATH.
       - name: Install CMake 3.27.8
+        shell: powershell
         run: |
           $url  = "https://github.com/DreamCoreRev/EonsCore/releases/download/cmake-3.27.8/cmake-3.27.8-windows-x86_64.msi"
           $dest = "$env:TEMP\cmake-3.27.8-windows-x86_64.msi"
           Write-Host "Downloading CMake 3.27.8..."
           Invoke-WebRequest -Uri $url -OutFile $dest
           Write-Host "Installing CMake 3.27.8..."
-          Start-Process msiexec.exe -ArgumentList `
-            "/i `"$dest`" /quiet /norestart ADD_CMAKE_TO_PATH=System" `
-            -Wait -NoNewWindow
-          echo "C:\Program Files\CMake\bin" >> $env:GITHUB_PATH
+          Start-Process msiexec.exe -ArgumentList "/i `"$dest`" /quiet /norestart ADD_CMAKE_TO_PATH=System" -Wait -NoNewWindow
+          # Prepend au PATH pour prendre le dessus sur le CMake 3.31 système
+          $cmakeBin = "C:\Program Files\CMake\bin"
+          echo "$cmakeBin" >> $env:GITHUB_PATH
           Write-Host "CMake 3.27.8 installed."
-        shell: powershell
 
-      # ── 4. Vérifier CMake ────────────────────────────────────────────────────
       - name: Verify CMake version
-        run: cmake --version
         shell: powershell
+        run: cmake --version
 
-      # ── 5. Installer Boost 1.78.0 ────────────────────────────────────────────
+      # ── 4. Installer Boost 1.78.0 ────────────────────────────────────────────
       - name: Install Boost
         uses: MarkusJx/install-boost@v2.5.1
         id: install-boost
@@ -70,65 +71,63 @@ jobs:
           platform_version: 2022
           toolset: ${{ env.BOOST_TOOLSET }}
 
-      # ── 6. Télécharger et installer MySQL 8.4.7 ──────────────────────────────
+      # ── 5. Installer MySQL 8.4.7 ─────────────────────────────────────────────
       - name: Install MySQL 8.4.7
+        shell: powershell
         run: |
           $url  = "https://github.com/DreamCoreRev/EonsCore/releases/download/mysql-8.4.7/mysql-8.4.7-winx64.msi"
           $dest = "$env:TEMP\mysql-8.4.7-winx64.msi"
           Write-Host "Downloading MySQL 8.4.7..."
           Invoke-WebRequest -Uri $url -OutFile $dest
           Write-Host "Installing MySQL 8.4.7..."
-          Start-Process msiexec.exe -ArgumentList `
-            "/i `"$dest`" /quiet /norestart INSTALLLOCATION=`"C:\MySQL`" ADDLOCAL=ALL" `
-            -Wait -NoNewWindow
-          echo "C:\MySQL\bin"        >> $env:GITHUB_PATH
+          Start-Process msiexec.exe -ArgumentList "/i `"$dest`" /quiet /norestart INSTALLLOCATION=`"C:\MySQL`" ADDLOCAL=ALL" -Wait -NoNewWindow
+          echo "C:\MySQL\bin" >> $env:GITHUB_PATH
           echo "MYSQL_ROOT=C:\MySQL" >> $env:GITHUB_ENV
           Write-Host "MySQL 8.4.7 installed at C:\MySQL"
-        shell: powershell
 
-      # ── 7. Télécharger et installer OpenSSL 3.1.3 ────────────────────────────
+      # ── 6. Installer OpenSSL 3.1.3 via MSI custom ────────────────────────────
+      # Le MSI Shining Light installe dans C:\Program Files\OpenSSL-Win64
+      # (chemin standard détecté par le registre Windows dans FindOpenSSL.cmake)
+      # On force OPENSSL_ROOT_DIR pour que CMake 3.27 ne cherche pas ailleurs.
       - name: Install OpenSSL 3.1.3
+        shell: powershell
         run: |
           $url  = "https://github.com/DreamCoreRev/EonsCore/releases/download/Win64OpenSSL-3_1_3/Win64OpenSSL-3_1_3.msi"
           $dest = "$env:TEMP\Win64OpenSSL-3_1_3.msi"
           Write-Host "Downloading OpenSSL 3.1.3..."
           Invoke-WebRequest -Uri $url -OutFile $dest
           Write-Host "Installing OpenSSL 3.1.3..."
-          Start-Process msiexec.exe -ArgumentList `
-            "/i `"$dest`" /quiet /norestart INSTALLDIR=`"C:\OpenSSL-Win64`"" `
-            -Wait -NoNewWindow
-          echo "OPENSSL_ROOT=C:\OpenSSL-Win64" >> $env:GITHUB_ENV
-          Write-Host "OpenSSL 3.1.3 installed at C:\OpenSSL-Win64"
-        shell: powershell
-
-      # ── 8. Diagnostiquer l'arborescence OpenSSL (debug) ──────────────────────
-      - name: Debug OpenSSL layout
-        shell: powershell
-        run: |
-          $opensslPath = "C:\OpenSSL-Win64"
-          if (Test-Path $opensslPath) {
-            Write-Host "=== .lib files ==="
-            Get-ChildItem $opensslPath -Recurse -Filter "*.lib" | ForEach-Object { Write-Host $_.FullName }
-            Write-Host "=== .dll files ==="
-            Get-ChildItem $opensslPath -Recurse -Filter "*.dll" | ForEach-Object { Write-Host $_.FullName }
+          # Ne pas forcer INSTALLDIR : laisser le MSI installer dans son chemin
+          # par défaut (C:\Program Files\OpenSSL-Win64) pour que les clés de
+          # registre Inno Setup soient correctement écrites et détectées par CMake.
+          Start-Process msiexec.exe -ArgumentList "/i `"$dest`" /quiet /norestart" -Wait -NoNewWindow
+          Write-Host "OpenSSL 3.1.3 installed."
+          # Détecter le chemin réel d'installation via le registre
+          $regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+          $installed = Get-ChildItem $regPath | Get-ItemProperty | Where-Object { $_.DisplayName -like "*OpenSSL*" }
+          if ($installed) {
+            Write-Host "OpenSSL found in registry: $($installed.InstallLocation)"
+            echo "OPENSSL_ROOT=$($installed.InstallLocation)" >> $env:GITHUB_ENV
           } else {
-            Write-Host "OpenSSL NOT found at $opensslPath"
-            Write-Host "=== C:\ directories ==="
-            Get-ChildItem "C:\" -Directory | ForEach-Object { Write-Host $_.Name }
+            # Fallback : chemin par défaut du MSI Shining Light
+            echo "OPENSSL_ROOT=C:\Program Files\OpenSSL-Win64" >> $env:GITHUB_ENV
           }
 
-      # ── 9. Configure (CMake) ─────────────────────────────────────────────────
-      # Correction principale : on passe OPENSSL_SSL_LIBRARY et
-      # OPENSSL_CRYPTO_LIBRARY explicitement pour éviter l'erreur
-      # "missing: OPENSSL_CRYPTO_LIBRARY Crypto SSL"
+      # ── 7. Configure (CMake) ─────────────────────────────────────────────────
       - name: Configure with CMake
+        shell: powershell
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
         run: |
+          # Résoudre le chemin OpenSSL depuis l'env (peut contenir des espaces)
+          $opensslRoot = $env:OPENSSL_ROOT
+          if (-not $opensslRoot) { $opensslRoot = "C:\Program Files\OpenSSL-Win64" }
+          Write-Host "Using OpenSSL root: $opensslRoot"
+
           cd "${{ env.BUILD_DIR }}"
           cmake "${{ env.REPO_DIR }}" `
             -A x64 `
-            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} `
+            -DCMAKE_BUILD_TYPE="${{ env.BUILD_TYPE }}" `
             -DTOOLS=ON `
             -DSCRIPTS=dynamic `
             -DSERVERS=1 `
@@ -139,50 +138,44 @@ jobs:
             -DWITH_COREDEBUG=0 `
             -DMYSQL_INCLUDE_DIR="C:/MySQL/include" `
             -DMYSQL_LIBRARY="C:/MySQL/lib/libmysql.lib" `
-            -DOPENSSL_ROOT_DIR="C:/OpenSSL-Win64" `
-            -DOPENSSL_INCLUDE_DIR="C:/OpenSSL-Win64/include" `
-            -DOPENSSL_SSL_LIBRARY="C:/OpenSSL-Win64/lib/VC/x64/MD/libssl.lib" `
-            -DOPENSSL_CRYPTO_LIBRARY="C:/OpenSSL-Win64/lib/VC/x64/MD/libcrypto.lib" `
+            -DOPENSSL_ROOT_DIR="$opensslRoot" `
             -DBOOST_ROOT="${{ steps.install-boost.outputs.BOOST_ROOT }}" `
             -DCMAKE_INSTALL_PREFIX="${{ env.BUILD_DIR }}/install"
-        shell: powershell
 
-      # ── 10. Build ─────────────────────────────────────────────────────────────
+      # ── 8. Build ─────────────────────────────────────────────────────────────
       - name: Build
+        shell: powershell
         run: |
           cmake --build "${{ env.BUILD_DIR }}" `
             --config ${{ env.BUILD_TYPE }} `
             --parallel 4
-        shell: powershell
 
-      # ── 11. Copier les DLL runtime nécessaires ────────────────────────────────
+      # ── 9. Copier les DLL runtime ─────────────────────────────────────────────
       - name: Copy runtime DLLs
+        shell: powershell
         run: |
-          $binDir = "${{ env.BUILD_DIR }}/bin/${{ env.BUILD_TYPE }}"
+          $binDir   = "${{ env.BUILD_DIR }}/bin/${{ env.BUILD_TYPE }}"
+          $opensslBin = if ($env:OPENSSL_ROOT) { "$env:OPENSSL_ROOT\bin" } else { "C:\Program Files\OpenSSL-Win64\bin" }
 
           Write-Host "Copying MySQL DLL..."
-          Copy-Item "C:/MySQL/lib/libmysql.dll"                "$binDir/libmysql.dll"        -Force
+          Copy-Item "C:/MySQL/lib/libmysql.dll" "$binDir/libmysql.dll" -Force
 
-          Write-Host "Copying OpenSSL DLLs..."
-          Copy-Item "C:/OpenSSL-Win64/bin/libcrypto-3-x64.dll" "$binDir/libcrypto-3-x64.dll" -Force
-          Copy-Item "C:/OpenSSL-Win64/bin/libssl-3-x64.dll"    "$binDir/libssl-3-x64.dll"    -Force
+          Write-Host "Copying OpenSSL DLLs from $opensslBin..."
+          Copy-Item "$opensslBin/libcrypto-3-x64.dll" "$binDir/libcrypto-3-x64.dll" -Force
+          Copy-Item "$opensslBin/libssl-3-x64.dll"    "$binDir/libssl-3-x64.dll"    -Force
 
-          Write-Host "All DLLs copied successfully."
-        shell: powershell
+          Write-Host "All DLLs copied."
 
-      # ── 12. Vérifier les binaires ─────────────────────────────────────────────
+      # ── 10. Vérifier les binaires ─────────────────────────────────────────────
       - name: Check binaries
+        shell: powershell
         run: |
           $binDir = "${{ env.BUILD_DIR }}/bin/${{ env.BUILD_TYPE }}"
-          Write-Host "=== Binaries in $binDir ==="
           Get-ChildItem $binDir
-          Write-Host "=== authserver version ==="
           & "$binDir/authserver.exe"  --version
-          Write-Host "=== worldserver version ==="
           & "$binDir/worldserver.exe" --version
-        shell: powershell
 
-      # ── 13. Upload de l'artifact ──────────────────────────────────────────────
+      # ── 11. Upload artifact ───────────────────────────────────────────────────
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
