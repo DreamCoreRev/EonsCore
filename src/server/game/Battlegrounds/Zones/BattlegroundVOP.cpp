@@ -420,7 +420,7 @@ WorldSafeLocsEntry const* BattlegroundVOP::GetClosestGraveYard(Player* player)
         // Definir les cimetieres ennemis pour Alliance et la Horde
         if (team == ALLIANCE)
         {
-            graveyard_enemy_base = sWorldSafeLocsStore.LookupEntry(GB_VOP_GRAVEYARD_RECTANGLEH1); // Cimetiere de la Horde
+            graveyard_enemy_base = sWorldSafeLocsStore.LookupEntry(BG_VOP_GRAVEYARD_RECTANGLEH1); // Cimetiere de la Horde
             graveyard_enemy_middle = sWorldSafeLocsStore.LookupEntry(BG_VOP_GRAVEYARD_RECTANGLEH2); // Autre cimetiere de la Horde
         }
         else if (team == HORDE)
@@ -437,7 +437,7 @@ WorldSafeLocsEntry const* BattlegroundVOP::GetClosestGraveYard(Player* player)
                 player->GetDistance2d(graveyard_enemy_middle->Loc.X, graveyard_enemy_middle->Loc.Y))
             {
                 // Retourne le cimetiere du debut pour equipe en cours
-                graveyardID = (team == ALLIANCE) ? BG_VOP_GRAVEYARD_RECTANGLEA1 : GB_VOP_GRAVEYARD_RECTANGLEH1;
+                graveyardID = (team == ALLIANCE) ? BG_VOP_GRAVEYARD_RECTANGLEA1 : BG_VOP_GRAVEYARD_RECTANGLEH1;
             }
             else
             {
