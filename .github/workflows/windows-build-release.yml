@@ -215,12 +215,14 @@ jobs:
 
           $cryptoDll = $null
           $sslDll    = $null
+          $legacyDll = $null
           foreach ($path in $opensslSearchPaths) {
             $path = $path.Trim()
             Write-Host "Checking OpenSSL path: '$path'"
             if (Test-Path "$path\libcrypto-3-x64.dll") {
               $cryptoDll = "$path\libcrypto-3-x64.dll"
               $sslDll    = "$path\libssl-3-x64.dll"
+              $legacyDll = "$path\legacy.dll"
               Write-Host "Found OpenSSL DLLs at: $path"
               break
             }
@@ -233,6 +235,7 @@ jobs:
             if ($found) {
               $cryptoDll = $found.FullName
               $sslDll    = Join-Path $found.DirectoryName "libssl-3-x64.dll"
+              $legacyDll = Join-Path $found.DirectoryName "legacy.dll"
               Write-Host "Found via scan: $cryptoDll"
             }
           }
@@ -244,6 +247,7 @@ jobs:
 
           Copy-Item $cryptoDll "$binDir\libcrypto-3-x64.dll" -Force
           Copy-Item $sslDll    "$binDir\libssl-3-x64.dll"    -Force
+          Copy-Item $legacyDll "$binDir\legacy.dll" -Force
 
           Write-Host "All DLLs copied successfully."
 
