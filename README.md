@@ -9,6 +9,7 @@
 * [Introduction](#introduction)
 * [Requirements](#requirements)
 * [Dependencies & Repacks](#dependencies--repacks)
+* [Additional Resources](#additional-resources)
 * [Install](#install)
 * [Reporting issues](#reporting-issues)
 * [Submitting fixes](#submitting-fixes)
@@ -75,6 +76,17 @@ All required dependencies and game data are available as pre-compiled repacks. D
 - **Git** [2.53.0](https://github.com/DreamCoreRev/EonsCore/releases/tag/Git-2.53.0.2-64-bit) - Version control
 - **SQLyog** [13.3.1](https://github.com/DreamCoreRev/EonsCore/releases/tag/SQLyog-13.3.1-0.x64Community) - MySQL GUI
 - **WowChat** [2.0.3](https://github.com/DreamCoreRev/EonsCore/releases/tag/wowchat-2.0.3) - Server console chat
+
+## Additional Resources
+
+Beyond the core server, EonsCore requires several essential components to operate:
+
+### Client & Patching
+- **Client Patch** [EonsPatch](https://github.com/DreamCoreRev/EonsPatch) - Essential client modifications for WoW 3.3.5 compatibility
+
+### Web & Community
+- **Website** [eons-world.eu](https://github.com/DreamCoreRev/eons-world.eu) - Official Eons website repository (PHP/MySQL CMS)
+- **Launcher** [Eons-Launcher](https://github.com/DreamCoreRev/Eons-Launcher) - Game launcher application for easy server access
 
 ## Install
 
