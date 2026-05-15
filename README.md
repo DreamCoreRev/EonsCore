@@ -23,7 +23,7 @@
 
 MSVC | GCC
 :------------: | :------------:
-[![MSVC Build Status](https://github.com/DreamCoreRev/EonsCore/actions/runs/25897261463.svg)](https://github.com/DreamCoreRev/EonsCore/actions/runs/25897261463) | [![GCC Build Status](https://github.com/DreamCoreRev/EonsCore/actions/runs/25897261466.svg)](https://github.com/DreamCoreRev/EonsCore/actions/runs/25897261466)
+[![MSVC Build Status](https://github.com/DreamCoreRev/EonsCore/actions/workflows/msvc-build.yml/badge.svg?branch=AzgathCore&event=push)](https://github.com/DreamCoreRev/EonsCore/actions/workflows/msvc-build.yml) | [![GCC Build Status](https://github.com/DreamCoreRev/EonsCore/actions/workflows/gcc-build.yml/badge.svg?branch=AzgathCore&event=push)](https://github.com/DreamCoreRev/EonsCore/actions/workflows/gcc-build.yml)
 
 
 ## Introduction
