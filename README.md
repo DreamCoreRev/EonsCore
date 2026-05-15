@@ -1,4 +1,4 @@
-# ![logo](https://raw.githubusercontent.com/DreamCoreRev/EonsCore/refs/heads/AzgathCore/favicon.png) EonsCore (3.3.5)
+# ![logo](https://raw.githubusercontent.com/DreamCoreRev/EonsCore/main/favicon.png) EonsCore (3.3.5)
 
 [![GitHub Release](https://img.shields.io/github/release/DreamCoreRev/EonsCore.svg)](https://github.com/DreamCoreRev/EonsCore/releases) [![License: GPL 2.0](https://img.shields.io/badge/License-GPL%202.0-blue.svg)](COPYING)
 
@@ -20,9 +20,9 @@
 
 ## Build Status
 
-master | 3.3.5 | Build Quality
+CircleCI | AppVeyor | GitHub Actions
 :------------: | :------------: | :------------:
-[![GitHub Workflow Status](https://github.com/DreamCoreRev/EonsCore/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/DreamCoreRev/EonsCore/actions?query=branch%3Amaster) | [![3.3.5 Build Status](https://github.com/DreamCoreRev/EonsCore/actions/workflows/build.yml/badge.svg?branch=3.3.5)](https://github.com/DreamCoreRev/EonsCore/actions?query=branch%3A3.3.5) | [![Commit Activity](https://img.shields.io/github/commit-activity/m/DreamCoreRev/EonsCore)](https://github.com/DreamCoreRev/EonsCore/commits)
+[![CircleCI Build Status](https://circleci.com/gh/DreamCoreRev/EonsCore.svg?style=shield)](https://app.circleci.com/pipelines/github/DreamCoreRev/EonsCore) | [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/DreamCoreRev/EonsCore?branch=master&svg=true)](https://ci.appveyor.com/project/DreamCoreRev/eonscore) | [![GitHub Actions](https://github.com/DreamCoreRev/EonsCore/actions/workflows/build.yml/badge.svg)](https://github.com/DreamCoreRev/EonsCore/actions)
 
 
 ## Introduction
