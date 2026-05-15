@@ -56,6 +56,7 @@ class Guild;
 class Item;
 class Pet;
 class Player;
+class ProcEventInfo;
 class Quest;
 class Spell;
 class SpellCastTargets;
