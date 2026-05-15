@@ -207,7 +207,7 @@ public:
             if (MovementType != POINT_MOTION_TYPE)
                 return;
 
-            instance->SetBossState(BOSS_ARGENT_CHALLENGE_E, DONE);
+            instance->SetBossState(BOSS_ARGENT_CHALLENGE, DONE);
 
             me->DisappearAndDie();
         }
@@ -335,7 +335,7 @@ public:
             if (MovementType != POINT_MOTION_TYPE || Point != 0)
                 return;
 
-            instance->SetBossState(BOSS_ARGENT_CHALLENGE_P, DONE);
+            instance->SetBossState(BOSS_ARGENT_CHALLENGE, DONE);
 
             me->DisappearAndDie();
         }
@@ -544,7 +544,7 @@ public:
         {
             switch (me->GetEntry())
             {
-                case NPC_ARGENT_LIGHWIELDER:
+                case NPC_ARGENT_LIGHTWIELDER:
                     switch (uiType)
                     {
                         case 0:
