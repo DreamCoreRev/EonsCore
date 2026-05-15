@@ -146,7 +146,7 @@ public:
     bool SetupBattleground() override;
     void Reset() override;
     void UpdateTeamScore(uint32 Team);
-    void EndBattleground(uint32 winner);
+    void EndBattleground(uint32 winner) override;
     bool UpdatePlayerScore(Player* Source, uint32 type, uint32 value, bool doAddHonor = true) override;
     uint32 GetPrematureWinner() override;
     void PostUpdateImpl(uint32 diff) override;
