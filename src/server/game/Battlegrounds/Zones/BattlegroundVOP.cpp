@@ -17,6 +17,7 @@
 
 #include "BattlegroundVOP.h"
 #include "BattlegroundPackets.h"
+#include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "World.h"
 #include "WorldPacket.h"

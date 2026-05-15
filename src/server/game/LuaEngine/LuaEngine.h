@@ -48,6 +48,7 @@ class Channel;
 class Corpse;
 class Creature;
 class CreatureAI;
+class DispelInfo;
 class ElunaInstanceAI;
 class GameObject;
 class Group;
