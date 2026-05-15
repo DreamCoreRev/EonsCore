@@ -3146,6 +3146,14 @@ void WorldObject::GetGameObjectListWithEntryInGrid(Container& gameObjectContaine
 }
 
 template <typename Container>
+void WorldObject::GetDeadCreatureListInGrid(Container& creaturedeadContainer, float maxSearchRange, bool alive /*= false*/) const
+{
+    Trinity::AllDeadCreaturesInRange check(this, maxSearchRange, alive);
+    Trinity::CreatureListSearcher<Trinity::AllDeadCreaturesInRange> searcher(this, creaturedeadContainer, check);
+    Cell::VisitGridObjects(this, searcher, maxSearchRange);
+}
+
+template <typename Container>
 void WorldObject::GetGameObjectListWithOptionsInGrid(Container& gameObjectContainer, float maxSearchRange, FindGameObjectOptions const& options) const
 {
     Trinity::InRangeCheckCustomizer checkCustomizer(*this, maxSearchRange);
@@ -3676,6 +3684,10 @@ template TC_GAME_API void WorldObject::GetCreatureListWithEntryInGrid(std::vecto
 template TC_GAME_API void WorldObject::GetCreatureListWithOptionsInGrid(std::list<Creature*>&, float, FindCreatureOptions const&) const;
 template TC_GAME_API void WorldObject::GetCreatureListWithOptionsInGrid(std::deque<Creature*>&,float, FindCreatureOptions const&) const;
 template TC_GAME_API void WorldObject::GetCreatureListWithOptionsInGrid(std::vector<Creature*>&, float, FindCreatureOptions const&) const;
+
+template TC_GAME_API void WorldObject::GetDeadCreatureListInGrid(std::list<Creature*>&, float, bool) const;
+template TC_GAME_API void WorldObject::GetDeadCreatureListInGrid(std::deque<Creature*>&, float, bool) const;
+template TC_GAME_API void WorldObject::GetDeadCreatureListInGrid(std::vector<Creature*>&, float, bool) const;
 
 template TC_GAME_API void WorldObject::GetPlayerListInGrid(std::list<Player*>&, float, bool) const;
 template TC_GAME_API void WorldObject::GetPlayerListInGrid(std::deque<Player*>&, float, bool) const;
