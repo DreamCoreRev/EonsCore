@@ -44,11 +44,11 @@ For further information on the EonsCore project, please visit our project websit
 Software requirements are available in the [wiki](https://trinitycore.info/en/install/requirements) for Windows, Linux and macOS.
 
 **EonsCore-specific requirements:**
-- CMake 3.27.8 or higher
+- CMake 3.27.8
 - Boost 1.78.0
 - OpenSSL 3.1.3
 - MySQL 8.4.7
-- Lua 5.2 (Eluna scripting)
+- VC++ Redistributable
 
 ## Dependencies & Repacks
 
@@ -58,7 +58,6 @@ All required dependencies and game data are available as pre-compiled repacks. D
 - **CMake** [3.27.8](https://github.com/DreamCoreRev/EonsCore/releases/tag/cmake-3.27.8) - Build configuration
 - **Boost** [1.78.0](https://github.com/DreamCoreRev/EonsCore/releases/tag/boost_1_78_0) - C++ libraries
 - **OpenSSL** [3.1.3](https://github.com/DreamCoreRev/EonsCore/releases/tag/Win64OpenSSL-3_1_3) - SSL/TLS encryption
-- **Lua** [5.2](https://github.com/DreamCoreRev/EonsCore/releases/tag/lua52) - Eluna scripting engine
 - **MySQL** [8.4.7](https://github.com/DreamCoreRev/EonsCore/releases/tag/mysql-8.4.7) - Database server
 
 ### Game Data & Assets
@@ -67,10 +66,11 @@ All required dependencies and game data are available as pre-compiled repacks. D
 - **MMaps** [MMapsEons](https://github.com/DreamCoreRev/EonsCore/releases/tag/MMapsEons) - Movement pathfinding
 - **DBC Files** [DBCEons](https://github.com/DreamCoreRev/EonsCore/releases/tag/DBCEons) - Game constants & data
 - **Cameras** [CamerasEons](https://github.com/DreamCoreRev/EonsCore/releases/tag/CamerasEons) - Cinematic cameras
+- **Lua** [5.2](https://github.com/DreamCoreRev/EonsCore/releases/tag/lua52) - Eluna scripting engine
 
 ### Compiled Binaries & Tools
 - **Binaries** [BinEons](https://github.com/DreamCoreRev/EonsCore/releases/tag/BinEons) - Compiled servers & tools
-- **Build Database** [build-db3d9258](https://github.com/DreamCoreRev/EonsCore/releases/tag/build-db3d9258) - Compilation cache
+- **Development Build** [build-db3d9258](https://github.com/DreamCoreRev/EonsCore/releases/tag/build-db3d9258) - Compiled servers & tools
 - **VC++ Redistributable** [VC_redist](https://github.com/DreamCoreRev/EonsCore/releases/tag/VC_redist) - Runtime libraries
 - **Git** [2.53.0](https://github.com/DreamCoreRev/EonsCore/releases/tag/Git-2.53.0.2-64-bit) - Version control
 - **SQLyog** [13.3.1](https://github.com/DreamCoreRev/EonsCore/releases/tag/SQLyog-13.3.1-0.x64Community) - MySQL GUI
@@ -114,10 +114,10 @@ EonsCore builds upon the work of the TrinityCore team. See the [TrinityCore AUTH
 
 ## Links
 
-* [Website](https://eons-world.eu)
-* [Discord](https://discord.com/invite/KrQsUdUz8W)
-* [Repository](https://github.com/DreamCoreRev/EonsCore)
-* [Releases](https://github.com/DreamCoreRev/EonsCore/releases)
+* [Eons Website](https://eons-world.eu)
+* [Eons Discord](https://discord.com/invite/KrQsUdUz8W)
+* [Eons Repository](https://github.com/DreamCoreRev/EonsCore)
+* [Eons Releases](https://github.com/DreamCoreRev/EonsCore/releases)
 * [TrinityCore Wiki](https://trinitycore.info)
 * [TrinityCore Forums](https://talk.trinitycore.org/)
 * [TrinityCore Discord](https://discord.trinitycore.org/)
