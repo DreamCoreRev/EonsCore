@@ -1,4 +1,4 @@
-# ![logo](https://raw.githubusercontent.com/DreamCoreRev/EonsCore/main/favicon.png) EonsCore (3.3.5)
+# ![logo](https://github.com/DreamCoreRev/EonsCore/blob/AzgathCore/favicon.png?raw=true) EonsCore (3.3.5)
 
 [![GitHub Release](https://img.shields.io/github/release/DreamCoreRev/EonsCore.svg)](https://github.com/DreamCoreRev/EonsCore/releases) [![License: GPL 2.0](https://img.shields.io/badge/License-GPL%202.0-blue.svg)](COPYING)
 
