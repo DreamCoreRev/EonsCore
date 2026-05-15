@@ -22,7 +22,7 @@
 
 CircleCI | AppVeyor | GitHub Actions
 :------------: | :------------: | :------------:
-[![CircleCI Build Status](https://circleci.com/gh/DreamCoreRev/EonsCore.svg?style=shield)](https://app.circleci.com/pipelines/github/DreamCoreRev/EonsCore) | [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/DreamCoreRev/EonsCore?branch=master&svg=true)](https://ci.appveyor.com/project/DreamCoreRev/eonscore) | [![GitHub Actions Status](https://github.com/DreamCoreRev/EonsCore/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/DreamCoreRev/EonsCore/actions)
+[![CircleCI Build Status](https://circleci.com/gh/DreamCoreRev/EonsCore/tree/AzgathCore.svg?style=shield)](https://circleci.com/gh/DreamCoreRev/EonsCore/tree/AzgathCore) | [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/DreamCoreRev/EonsCore?branch=AzgathCore&svg=true)](https://ci.appveyor.com/project/DreamCoreRev/eonscore/branch/AzgathCore) | [![GCC Build Status](https://github.com/DreamCoreRev/EonsCore/actions/workflows/gcc-build.yml/badge.svg?branch=AzgathCore&event=push)](https://github.com/DreamCoreRev/EonsCore/actions?query=workflow%3AGCC+branch%3AAzgathCore+event%3Apush)
 
 
 ## Introduction
