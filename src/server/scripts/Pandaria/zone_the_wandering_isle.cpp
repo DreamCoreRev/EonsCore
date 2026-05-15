@@ -243,7 +243,7 @@ public:
             }
         }
 
-        void WaypointReached(uint32 /*nodeId*/, uint32 /*pathId*/) override
+        void WaypointReached(uint32 /*nodeId*/, uint32 /*pathId*/)
         {
             
         }

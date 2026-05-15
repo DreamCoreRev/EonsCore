@@ -8,7 +8,6 @@
 #include "HookHelpers.h"
 #include "LuaEngine.h"
 #include "BindingMap.h"
-#include "ElunaIncludes.h"
 #include "ElunaTemplate.h"
 
 using namespace Hooks;

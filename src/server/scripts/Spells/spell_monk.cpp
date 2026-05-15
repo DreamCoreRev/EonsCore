@@ -233,7 +233,7 @@ struct npc_monk_xuen : public ScriptedAI
 {
     npc_monk_xuen(Creature* c) : ScriptedAI(c) { }
 
-    void IsSummonedBy(WorldObject* /*summoner*/) override
+    void IsSummonedBy(WorldObject* /*summoner*/)
     {
         for (uint8 i = 0; i < 4; ++i)
         {

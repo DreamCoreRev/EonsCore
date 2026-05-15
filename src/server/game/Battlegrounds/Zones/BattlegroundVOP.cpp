@@ -17,13 +17,11 @@
 
 #include "BattlegroundVOP.h"
 #include "BattlegroundPackets.h"
-#include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "World.h"
 #include "WorldPacket.h"
 #include "BattlegroundMgr.h"
 #include "Creature.h"
-#include "GameObject.h"
 #include "Language.h"
 #include "Object.h"
 #include "Player.h"
@@ -402,13 +400,13 @@ WorldSafeLocsEntry const* BattlegroundVOP::GetClosestGraveYard(Player* player)
     if (!player)
         return nullptr;
 
-    TeamId team = player->GetTeamId();
+    uint8 team = player->GetTeamId();
     uint32 graveyardID = 0;
 
     // Si le statut du champ de bataille est pas en cours envoie le joueur au cimetiere de la salle de drapeau
     if (GetStatus() != STATUS_IN_PROGRESS)
     {
-        if (team == TEAM_ALLIANCE)
+        if (team == ALLIANCE)
             graveyardID = BG_VOP_GRAVEYARD_RECTANGLEA2; // Cimetiere pour Alliance pendant la preparation
         else
             graveyardID = BG_VOP_GRAVEYARD_RECTANGLEH2; // Cimetiere pour la Horde pendant la preparation
@@ -420,12 +418,12 @@ WorldSafeLocsEntry const* BattlegroundVOP::GetClosestGraveYard(Player* player)
         WorldSafeLocsEntry const* graveyard_enemy_middle = nullptr;
 
         // Definir les cimetieres ennemis pour Alliance et la Horde
-        if (team == TEAM_ALLIANCE)
+        if (team == ALLIANCE)
         {
             graveyard_enemy_base = sWorldSafeLocsStore.LookupEntry(BG_VOP_GRAVEYARD_RECTANGLEH1); // Cimetiere de la Horde
             graveyard_enemy_middle = sWorldSafeLocsStore.LookupEntry(BG_VOP_GRAVEYARD_RECTANGLEH2); // Autre cimetiere de la Horde
         }
-        else if (team == TEAM_HORDE)
+        else if (team == HORDE)
         {
             graveyard_enemy_base = sWorldSafeLocsStore.LookupEntry(BG_VOP_GRAVEYARD_RECTANGLEA1); // Cimetiere de l'Alliance
             graveyard_enemy_middle = sWorldSafeLocsStore.LookupEntry(BG_VOP_GRAVEYARD_RECTANGLEA2); // Autre cimetiere de l'Alliance
@@ -439,12 +437,12 @@ WorldSafeLocsEntry const* BattlegroundVOP::GetClosestGraveYard(Player* player)
                 player->GetDistance2d(graveyard_enemy_middle->Loc.X, graveyard_enemy_middle->Loc.Y))
             {
                 // Retourne le cimetiere du debut pour equipe en cours
-                graveyardID = (team == TEAM_ALLIANCE) ? BG_VOP_GRAVEYARD_RECTANGLEA1 : BG_VOP_GRAVEYARD_RECTANGLEH1;
+                graveyardID = (team == ALLIANCE) ? BG_VOP_GRAVEYARD_RECTANGLEA1 : BG_VOP_GRAVEYARD_RECTANGLEH1;
             }
             else
             {
                 // Retourne le cimetiere central pour equipe en cours
-                graveyardID = (team == TEAM_ALLIANCE) ? BG_VOP_GRAVEYARD_RECTANGLEA2 : BG_VOP_GRAVEYARD_RECTANGLEH2;
+                graveyardID = (team == ALLIANCE) ? BG_VOP_GRAVEYARD_RECTANGLEA2 : BG_VOP_GRAVEYARD_RECTANGLEH2;
             }
         }
     }

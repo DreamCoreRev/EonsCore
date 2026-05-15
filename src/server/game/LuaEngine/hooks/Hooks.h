@@ -9,8 +9,6 @@
 
 #if defined ELUNA_CMANGOS
 #include "Platform/Define.h"
-#else
-#include "Define.h"
 #endif
 #include <utility>
 

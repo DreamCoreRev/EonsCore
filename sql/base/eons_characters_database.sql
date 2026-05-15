@@ -825,19 +825,6 @@ CREATE TABLE `character_reputation` (
 
 /*Data for the table `character_reputation` */
 
-/*Table structure for table `character_resurrection` */
-
-DROP TABLE IF EXISTS `character_resurrection`;
-
-CREATE TABLE `character_resurrection` (
-  `guid` int unsigned NOT NULL,
-  `rez_count` tinyint unsigned NOT NULL DEFAULT '3',
-  `last_reset` int unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-/*Data for the table `character_resurrection` */
-
 /*Table structure for table `character_skills` */
 
 DROP TABLE IF EXISTS `character_skills`;
@@ -2186,6 +2173,19 @@ insert  into `worldstates`(`entry`,`value`,`comment`) values
 (20006,0,'NextGuildDailyResetTime'),
 (20007,0,'NextMonthlyQuestResetTime'),
 (20008,0,'NextDailyQuestResetTime');
+
+/*Table structure for table `character_resurrection` */
+
+DROP TABLE IF EXISTS `character_resurrection`;
+
+CREATE TABLE `character_resurrection` (
+  `guid` int unsigned NOT NULL,
+  `rez_count` tinyint unsigned NOT NULL DEFAULT '3',
+  `last_reset` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`guid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Data for the table `character_resurrection` */
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
