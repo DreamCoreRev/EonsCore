@@ -1,4 +1,4 @@
-# ![logo](https://raw.githubusercontent.com/DreamCoreRev/EonsCore/refs/heads/AzgathCore/favicon.png) EonsCore (3.3.5)
+# ![logo](https://raw.githubusercontent.com/DreamCoreRev/EonsCore/refs/heads/master/favicon.png) EonsCore (3.3.5)
 
 [![GitHub Release](https://img.shields.io/github/release/DreamCoreRev/EonsCore.svg)](https://github.com/DreamCoreRev/EonsCore/releases) [![License: GPL 2.0](https://img.shields.io/badge/License-GPL%202.0-blue.svg)](COPYING)
 
@@ -23,7 +23,7 @@
 
 MSVC | GCC
 :------------: | :------------:
-[![MSVC Build Status](https://github.com/DreamCoreRev/EonsCore/actions/workflows/windows-build-release.yml/badge.svg?branch=AzgathCore&event=push)](https://github.com/DreamCoreRev/EonsCore/actions/workflows/windows-build-release.yml) | [![GCC Build Status](https://github.com/DreamCoreRev/EonsCore/actions/workflows/gcc-build.yml/badge.svg?branch=AzgathCore&event=push)](https://github.com/DreamCoreRev/EonsCore/actions/workflows/gcc-build.yml)
+[![MSVC Build Status](https://github.com/DreamCoreRev/EonsCore/actions/workflows/windows-build-release.yml/badge.svg?branch=AzgathCore&event=push)](https://github.com/DreamCoreRev/EonsCore/actions/workflows/windows-build-release.yml)
 
 
 ## Introduction
