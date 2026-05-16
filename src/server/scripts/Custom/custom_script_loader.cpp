@@ -20,6 +20,7 @@
 void AddSC_AccountAchievements();
 void AddSC_AccountCompanions();
 void AddSC_AccountMounts();
+void AddSC_custom_reload_commands();
 void AddLfgSoloScripts();
 void AddSC_premium_account();
 void AddStartGuildScripts();
@@ -32,6 +33,7 @@ void AddCustomScripts()
     AddSC_AccountAchievements();
 	AddSC_AccountCompanions();
 	AddSC_AccountMounts();
+	AddSC_custom_reload_commands();
 	AddLfgSoloScripts();
 	AddSC_premium_account();
 	AddStartGuildScripts();
