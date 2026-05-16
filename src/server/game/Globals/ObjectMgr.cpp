@@ -2161,7 +2161,7 @@ void ObjectMgr::LoadCreatures()
     //   11               12         13       14            15         16          17          18                19                   20                    21
         "currentwaypoint, curhealth, curmana, MovementType, spawnMask, phaseMask, eventEntry, poolSpawnId, creature.npcflag, creature.unit_flags, creature.dynamicflags, "
     //   22                   23
-        "creature.ScriptName, creature.StringId, creature.size "
+        "creature.ScriptName, creature.StringId "
         "FROM creature "
         "LEFT OUTER JOIN game_event_creature ON creature.guid = game_event_creature.guid "
         "LEFT OUTER JOIN pool_members ON pool_members.type = 0 AND creature.guid = pool_members.spawnId");
@@ -2218,7 +2218,6 @@ void ObjectMgr::LoadCreatures()
         data.dynamicflags   = fields[21].GetUInt32();
         data.scriptId       = GetScriptId(fields[22].GetString());
         data.StringId       = fields[23].GetString();
-        data.size           = fields[24].GetFloat();
         data.spawnGroupData = GetDefaultSpawnGroup();
 
         MapEntry const* mapEntry = sMapStore.LookupEntry(data.mapId);
@@ -2484,7 +2483,7 @@ void ObjectMgr::LoadGameObjects()
     //   7          8          9          10         11             12            13     14         15         16          17
         "rotation0, rotation1, rotation2, rotation3, spawntimesecs, animprogress, state, spawnMask, phaseMask, eventEntry, poolSpawnId, "
     //   18          19
-        "ScriptName, StringId, size "
+        "ScriptName, StringId "
         "FROM gameobject LEFT OUTER JOIN game_event_gameobject ON gameobject.guid = game_event_gameobject.guid "
         "LEFT OUTER JOIN pool_members ON pool_members.type = 1 AND gameobject.guid = pool_members.spawnId");
 
@@ -2589,7 +2588,6 @@ void ObjectMgr::LoadGameObjects()
 
         data.scriptId = GetScriptId(fields[18].GetString());
         data.StringId = fields[19].GetString();
-        data.size = fields[20].GetFloat();
 
         if (data.rotation.x < -1.0f || data.rotation.x > 1.0f)
         {
