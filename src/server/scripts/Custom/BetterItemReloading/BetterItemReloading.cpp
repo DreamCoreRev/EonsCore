@@ -236,7 +236,7 @@ void BetterLoadItem(Player* player, std::vector<uint32> itemID)
 
 		if (sObjectMgr->GetItemTemplateStore().find(entry) == sObjectMgr->GetItemTemplateStore().end())
 		{
-			ChatHandler(player->GetSession()).PSendSysMessage("L'item ne se trouve pas dans la base de données, veuillez d'abord utiliser la commande .reload item_template, ou redémarrez le royaume.");
+			ChatHandler(player->GetSession()).PSendSysMessage("L'item ne se trouve pas dans la base de donnees, veuillez d'abord utiliser la commande .reload item_template, ou redemarrez le royaume.");
 			return;
 		}
 
