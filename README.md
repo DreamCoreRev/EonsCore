@@ -67,11 +67,11 @@ All required dependencies and game data are available as pre-compiled repacks. D
 - **MMaps** [MMapsEons](https://github.com/DreamCoreRev/EonsCore/releases/tag/MMapsEons) - Movement pathfinding
 - **DBC Files** [DBCEons](https://github.com/DreamCoreRev/EonsCore/releases/tag/DBCEons) - Game constants & data
 - **Cameras** [CamerasEons](https://github.com/DreamCoreRev/EonsCore/releases/tag/CamerasEons) - Cinematic cameras
-- **Lua** [5.2](https://github.com/DreamCoreRev/EonsCore/releases/tag/lua52) - Eluna scripting engine
+- **Lua** [5.2](https://github.com/DreamCoreRev/EonsLua) - Eluna scripting engine
 
 ### Compiled Binaries & Tools
 - **Binaries** [BinEons](https://github.com/DreamCoreRev/EonsCore/releases/tag/BinEons) - Compiled servers & tools
-- **Development Build** [build-db3d9258](https://github.com/DreamCoreRev/EonsCore/releases/tag/build-db3d9258) - Compiled servers & tools
+- **Development Build** [releases](https://github.com/DreamCoreRev/EonsCore/releases) - Compiled servers & tools
 - **VC++ Redistributable** [VC_redist](https://github.com/DreamCoreRev/EonsCore/releases/tag/VC_redist) - Runtime libraries
 - **Git** [2.53.0](https://github.com/DreamCoreRev/EonsCore/releases/tag/Git-2.53.0.2-64-bit) - Version control
 - **SQLyog** [13.3.1](https://github.com/DreamCoreRev/EonsCore/releases/tag/SQLyog-13.3.1-0.x64Community) - MySQL GUI
