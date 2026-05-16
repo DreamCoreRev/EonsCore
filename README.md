@@ -21,8 +21,8 @@
 
 ## Build Status
 
-MSVC | GCC
-:------------: | :------------:
+MSVC
+:------------:
 [![MSVC Build Status](https://github.com/DreamCoreRev/EonsCore/actions/workflows/windows-build-release.yml/badge.svg?branch=AzgathCore&event=push)](https://github.com/DreamCoreRev/EonsCore/actions/workflows/windows-build-release.yml)
 
 
