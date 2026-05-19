@@ -1243,7 +1243,7 @@ FlashAtStart = 1
 #        Example:     "Welcome to John's Server!@This server is proud to be powered by Trinity Core."
 #        Default:     "Welcome to a Trinity Core server."
 
-Motd = "Welcome to a Trinity Core server."
+Motd = "|cffFFD700Bienvenue sur Eons|r@|cff00FF00Wrath of the Lich King — 3.3.5|r@|cffFFAAAASignale tout bug à l'équipe GM. Bonne aventure !|r"
 
 #
 #    Server.LoginInfo
@@ -3065,7 +3065,7 @@ Ra.MinLevel = 3
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-SOAP.Enabled = 0
+SOAP.Enabled = 1
 
 #
 #    SOAP.IP
