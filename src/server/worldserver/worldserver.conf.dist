@@ -73,7 +73,7 @@ RealmID = 1
 #        Example:     "@prefix@/share/trinitycore"
 #        Default:     "."
 
-DataDir = "."
+DataDir = "../data"
 
 #
 #    LogsDir
@@ -82,7 +82,7 @@ DataDir = "."
 #                     Logs directory must exist, or log file creation will be disabled.
 #        Default:     "" - (Log files will be stored in the current path)
 
-LogsDir = ""
+LogsDir = "../logs"
 
 #
 #    LoginDatabaseInfo
@@ -107,9 +107,9 @@ LogsDir = ""
 #    The SSL option will enable TLS when connecting to the specified database. If not provided or
 #    any value other than 'ssl' is set, TLS will not be used.
 
-LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth"
-WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world"
-CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
+LoginDatabaseInfo     = "127.0.0.1;3308;root;root;eons_auth"
+WorldDatabaseInfo     = "127.0.0.1;3308;root;root;eons_world"
+CharacterDatabaseInfo = "127.0.0.1;3308;root;root;eons_chars"
 
 #
 #    LoginDatabase.WorkerThreads
@@ -590,7 +590,7 @@ GameType = 0
 #                     28 - (QA Server     - any language)
 #                     29 - (CN9           - basic-Latin at create, any at login)
 
-RealmZone = 1
+RealmZone = 10
 
 #
 #    StrictPlayerNames
@@ -648,7 +648,7 @@ StrictPetNames = 0
 #                     7   - (Spanish Mexico)
 #                     8   - (Russian)
 
-DBC.Locale = 255
+DBC.Locale = 2
 
 #
 #    DeclinedNames
@@ -782,7 +782,7 @@ CharactersPerAccount = 50
 #        Range:       1-10
 #        Default:     10 - (Client limitation)
 
-CharactersPerRealm = 10
+CharactersPerRealm = 20
 
 #
 #    DeathKnightsPerRealm
@@ -921,7 +921,7 @@ DisableWaterBreath = 4
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-AllFlightPaths = 0
+AllFlightPaths = 1
 
 #
 #    InstantFlightPaths
@@ -1111,7 +1111,7 @@ Guild.BankEventLogRecordsCount = 25
 #        Range:       0-11
 #        Default:     2
 
-MaxPrimaryTradeSkill = 2
+MaxPrimaryTradeSkill = 4
 
 #
 #    MinPetitionSigns
@@ -1119,7 +1119,7 @@ MaxPrimaryTradeSkill = 2
 #        Range:       0-9
 #        Default:     9
 
-MinPetitionSigns = 9
+MinPetitionSigns = 0
 
 #
 #    MaxGroupXPDistance

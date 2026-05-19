@@ -39,7 +39,7 @@
 #                     Logs directory must exist, or log file creation will be disabled.
 #        Default:     "" - (Log files will be stored in the current path)
 
-LogsDir = ""
+LogsDir = "../logs"
 
 #
 #    MaxPingTime
@@ -205,7 +205,7 @@ AllowLoggingIPAddressesInDatabase = 1
 #    The SSL option will enable TLS when connecting to the specified database. If not provided or
 #    any value other than 'ssl' is set, TLS will not be used.
 
-LoginDatabaseInfo = "127.0.0.1;3306;trinity;trinity;auth"
+LoginDatabaseInfo = "127.0.0.1;3308;root;root;eons_auth"
 
 #
 #    LoginDatabase.WorkerThreads
@@ -256,7 +256,7 @@ TOTPMasterSecret =
 #        Default:     0  - (All Disabled)
 #                     1  - (All Enabled)
 
-Updates.EnableDatabases = 0
+Updates.EnableDatabases = 1
 
 #
 #    Updates.AutoSetup
